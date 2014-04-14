@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">风之播放器</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_file">本地视频</string>
+    <string name="title_online">在线视频</string>
+    <string name="loadinfo">载入中,请稍后...</string>
+    <string name="scaninfo">正在扫描视频文件...</string>
+    <string name="file_oper">文件操作</string>
+    <string name="file_rename">重命名</string>
+    <string name="file_delete">删除</string>
+    <string name="file_info">详细信息</string>
+    <string name="file_rename_exists">文件已存在</string>
+    <string name="file_rename_failed">重命名失败</string>
+    <string name="file_delete_confirm">确定删除 (%s) ？</string>
+    <string name="file_title">标题：</string>
+    <string name="file_create_time">创建时间：</string>
+    <string name="file_modify_time">修改时间：</string>
+    <string name="file_type">类型：</string>
+    <string name="file_duration">持续时间：</string>
+    <string name="file_size">大小：</string>
+    <string name="file_path">路径：</string>
+    <string name="file_resolution">分辨率：</string>
+    <string name="file_info_close">关闭</string>
+    <string name="video_layout_loading">正在缓冲...</string>
+    <string name="video_layout_buffering_progress">缓冲：%.2f%%</string>
+    <string name="video_download_rate">下载速度：%dKB/s</string>
+    <string name="action_search">搜索</string>
+    <string name="action_delete">删除</string>
+    <string name="action_camera">相机</string>
+</resources>

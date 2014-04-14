@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WindPlayer</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_file">Local Video</string>
+    <string name="title_online">Online Video</string>
+	<string name="loadinfo">Loading, please wait...</string>
+	<string name="scaninfo">Scanning video files...</string>
+	<string name="file_oper">File operation</string>
+	<string name="file_rename">Rename</string>
+	<string name="file_delete">Delete</string>
+	<string name="file_info">Info</string>
+	<string name="file_rename_exists">File is exists</string>
+	<string name="file_rename_failed">Rename failed</string>
+	<string name="file_delete_confirm">Sure to delete (%s) ？</string>
+	<string name="file_title">Title: </string>
+	<string name="file_create_time">Created time: </string>
+	<string name="file_modify_time">Modified time: </string>
+	<string name="file_type">Type: </string>
+	<string name="file_duration">Duration: </string>
+	<string name="file_size">Size: </string>
+	<string name="file_path">Path: </string>
+	<string name="file_resolution">Resolution: </string>
+	<string name="file_info_close">Close</string>
+	<string name="video_layout_loading">Loading...</string>
+	<string name="video_layout_buffering_progress">Buffering: %.2f%%</string>
+	<string name="video_download_rate">Download rate: %dKB/s</string>
+	<string name="action_search">Search</string>
+	<string name="action_delete">Delete</string>
+	<string name="action_camera">Camera</string>
+</resources>
