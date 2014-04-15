@@ -153,7 +153,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         }
         
         //listen the collapse event
-        /*MenuItem menuItem = menu.findItem(R.id.action_search);
+        /**MenuItem menuItem = menu.findItem(R.id.action_search);
         MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
             
             @Override
