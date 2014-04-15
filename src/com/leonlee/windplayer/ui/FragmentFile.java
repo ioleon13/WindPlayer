@@ -33,6 +33,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -149,6 +151,24 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         } else {
             Log.e(TAG, "searchManager is null");
         }
+        
+        //listen the collapse event
+        /*MenuItem menuItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
+            
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem arg0) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+            
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem arg0) {
+                Log.d(TAG, "search menu collapse, clean search");
+                showList(mFileArray);
+                return false;
+            }
+        });*/
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -325,11 +345,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 			super.onPostExecute(result);
 			
 			//mAdapter = new FileAdapter(getActivity(), FileBusiness.getAllSortFiles(getActivity()));
-			mAdapter = new FileAdapter(getActivity(), mFileArray);
-			mListView.setAdapter(mAdapter);
-			
-			mLoadingLayout.setVisibility(View.GONE);
-			mListView.setVisibility(View.VISIBLE);
+			showList(mFileArray);
 		}
 
 		@Override
@@ -354,12 +370,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         protected void onPostExecute(ArrayList<PFile> result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            
-            mAdapter = new FileAdapter(getActivity(), queryList);
-            mListView.setAdapter(mAdapter);
-            
-            mLoadingLayout.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
+            showList(queryList);
         }
 
         @Override
@@ -370,6 +381,14 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
             mListView.setVisibility(View.GONE);
         }
 	    
+	}
+	
+	private void showList(ArrayList<PFile> fileList) {
+	    mAdapter = new FileAdapter(getActivity(), fileList);
+        mListView.setAdapter(mAdapter);
+        
+        mLoadingLayout.setVisibility(View.GONE);
+        mListView.setVisibility(View.VISIBLE);
 	}
 
 	private class FileAdapter extends ArrayAdapter<PFile> {
