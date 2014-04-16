@@ -15,6 +15,7 @@ import com.leonlee.windplayer.business.MediaBusiness;
 import com.leonlee.windplayer.database.SQLiteHelper;
 import com.leonlee.windplayer.database.TableColumns.FilesColumns;
 import com.leonlee.windplayer.po.PFile;
+import com.leonlee.windplayer.provider.SuggestionProvider;
 import com.leonlee.windplayer.util.FileUtils;
 import com.leonlee.windplayer.util.PinyinUtils;
 
@@ -33,6 +34,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.text.InputFilter;
@@ -129,7 +131,10 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
                 startHiding();
             }
         };
-		
+        
+        //save search suggestion
+        saveSearchSuggestion();
+        
 		return v;
 	}
 	
@@ -185,6 +190,20 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * save search suggestion
+     */
+    private void saveSearchSuggestion() {
+        Intent intent = getActivity().getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(TAG, "save search string: " + query);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
+                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
         }
     }
     

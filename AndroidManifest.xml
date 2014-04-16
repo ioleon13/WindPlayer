@@ -40,6 +40,12 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:configChanges="orientation|keyboard|keyboardHidden|navigation" >
         </activity>
+        
+        <!-- search suggestion provider -->
+        <provider android:name="com.leonlee.windplayer.provider.SuggestionProvider"
+            android:authorities="com.leonlee.windplayer.provider.SuggestionProvider">
+            
+        </provider>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET" />
