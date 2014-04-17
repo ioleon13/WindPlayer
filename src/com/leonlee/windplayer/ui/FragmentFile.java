@@ -78,6 +78,8 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	
 	//action bar
 	private ActionBar mActionBar;
+	private SearchView mSearchView;
+	private MenuItem mSearchItem;
 	
 	private ArrayList<PFile> mFileArray;
 	
@@ -103,7 +105,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		mActionBar = getActivity().getActionBar();
 		if (mActionBar != null) {
 		    mActionBar.setTitle(R.string.title_file);
-	        mActionBar.setDisplayHomeAsUpEnabled(true);
+	        //mActionBar.setDisplayHomeAsUpEnabled(true);
 	        mActionBar.show();
 		}
 		
@@ -143,15 +145,17 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         inflater.inflate(R.menu.main_action_menu, menu);
         
         //Get the SearchView and set configuration
+        mSearchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if (searchManager != null) {
-            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-            if (searchView != null) {
-                searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-                searchView.setIconifiedByDefault(false);
-                searchView.setOnQueryTextListener(queryTextListener);
+            mSearchView = (SearchView) mSearchItem.getActionView();
+            if (mSearchView != null) {
+                mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+                mSearchView.setIconifiedByDefault(false);
+                mSearchView.setQueryHint(getActivity().getString(R.string.search_hint));
+                mSearchView.setOnQueryTextListener(queryTextListener);
             } else {
-                Log.e(TAG, "searchView is null");
+                Log.e(TAG, "SearchView is null");
             }
         } else {
             Log.e(TAG, "searchManager is null");
@@ -211,6 +215,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         
         @Override
         public boolean onQueryTextSubmit(String query) {
+            //TO DO: startactivity to show search result
             Log.d(TAG, "query string is: " + query);
             new SearchTask().execute(query);
             return false;
