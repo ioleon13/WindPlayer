@@ -30,4 +30,6 @@
     <string name="action_delete">删除</string>
     <string name="action_camera">相机</string>
     <string name="search_hint">搜索视频</string>
+    <string name="search_result_title">%d 项搜索结果</string>
+    <string name="search_history">%d 项搜索结果</string>
 </resources>

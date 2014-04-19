@@ -31,4 +31,6 @@
 	<string name="action_delete">Delete</string>
 	<string name="action_camera">Camera</string>
 	<string name="search_hint">Search video</string>
+	<string name="search_result_title">Search result: %d</string>
+	<string name="search_history">%d results</string>
 </resources>

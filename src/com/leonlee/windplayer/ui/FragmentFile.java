@@ -19,6 +19,7 @@ import com.leonlee.windplayer.provider.SuggestionProvider;
 import com.leonlee.windplayer.util.FileUtils;
 import com.leonlee.windplayer.util.PinyinUtils;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -81,7 +82,11 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	private SearchView mSearchView;
 	private MenuItem mSearchItem;
 	
-	private ArrayList<PFile> mFileArray;
+	private static ArrayList<PFile> mFileArray;
+	
+	public static ArrayList<PFile> getFileArray() {
+	    return mFileArray;
+	}
 	
 	private ArrayList<PFile> queryList;
 
@@ -135,7 +140,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         };
         
         //save search suggestion
-        saveSearchSuggestion();
+        //saveSearchSuggestion();
         
 		return v;
 	}
@@ -213,11 +218,17 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     
     OnQueryTextListener queryTextListener = new OnQueryTextListener() {
         
+        @SuppressLint("NewApi")
         @Override
         public boolean onQueryTextSubmit(String query) {
             //TO DO: startactivity to show search result
-            Log.d(TAG, "query string is: " + query);
-            new SearchTask().execute(query);
+            Log.d(TAG, "query string is: " + query + ", start a search activity");
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), SearchActivity.class);
+            intent.putExtra(SearchManager.QUERY, query);
+            startActivity(intent);
+            mSearchItem.collapseActionView();
+            //new SearchTask().execute(query);
             return false;
         }
         

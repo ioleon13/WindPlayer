@@ -6,7 +6,7 @@ public class SuggestionProvider extends SearchRecentSuggestionsProvider {
     private String TAG = "SuggestionProvider";
     
     public final static String AUTHORITY = "com.leonlee.windplayer.provider.SuggestionProvider";
-    public final static int MODE = DATABASE_MODE_QUERIES;
+    public final static int MODE = DATABASE_MODE_QUERIES | DATABASE_MODE_2LINES;
     
     public SuggestionProvider() {
         setupSuggestions(AUTHORITY, MODE);
