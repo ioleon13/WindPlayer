@@ -39,6 +39,7 @@ import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.text.InputFilter;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -473,7 +474,12 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 			
 			//show file size
 			String fileSize = FileUtils.showFileSize(f.file_size);
+			fileSize += "   " + f.resolution;
 			((TextView)convertView.findViewById(R.id.file_size)).setText(fileSize);
+			
+			//show file duration
+			String duration = DateUtils.formatElapsedTime(f.duration);
+			((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
 			return convertView;
 		}
 		

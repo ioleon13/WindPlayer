@@ -43,6 +43,17 @@
         android:textColor="@color/title"
         android:textSize="12sp"/>
     
+    <TextView android:id="@+id/file_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/title"
+        android:layout_marginRight="10.0dip"
+        android:paddingBottom="3.0dip"
+        android:textColor="@color/title"
+        android:textSize="12sp"/>
+    
     <ImageView android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
