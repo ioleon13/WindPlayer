@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import com.leonlee.windplayer.R;
+import com.leonlee.windplayer.adapter.FileAdapter;
 import com.leonlee.windplayer.business.FileBusiness;
 import com.leonlee.windplayer.business.MediaBusiness;
 import com.leonlee.windplayer.database.SQLiteHelper;
@@ -420,69 +421,11 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	}
 	
 	private void showList(ArrayList<PFile> fileList) {
-	    mAdapter = new FileAdapter(getActivity(), fileList);
+	    mAdapter = new FileAdapter(getActivity(), R.layout.fragment_file_item, fileList);
         mListView.setAdapter(mAdapter);
         
         mLoadingLayout.setVisibility(View.GONE);
         mListView.setVisibility(View.VISIBLE);
-	}
-
-	private class FileAdapter extends ArrayAdapter<PFile> {
-	    private static final int mRid = R.layout.fragment_file_item;
-
-		public FileAdapter(Context context, ArrayList<PFile> list) {
-			super(context, mRid, list);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			final PFile f = getItem(position);
-			if (convertView == null) {
-				final LayoutInflater mInflater = getActivity().getLayoutInflater();
-				convertView = mInflater.inflate(mRid, null);
-			}
-			
-			if (f.is_audio) {
-			    ((ImageView)convertView.findViewById(R.id.thumbnail))
-			        .setImageResource(R.drawable.default_thumbnail_music);
-			} else {
-			    if (f.thumb != null) {
-			        /*Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(getActivity(),
-			                f.thumb, Video.Thumbnails.MICRO_KIND);*/
-			        try {
-			            File fileThumb = new File(f.thumb);
-			            if (fileThumb.exists() && fileThumb.canRead()) {
-			                ((ImageView)convertView.findViewById(R.id.thumbnail))
-	                            .setImageURI(Uri.parse(f.thumb));
-			            } else {
-			                Log.i(TAG, "thumbnail file: " + f.thumb + " is not exist or not readable");
-		                    ((ImageView)convertView.findViewById(R.id.thumbnail))
-		                        .setImageResource(R.drawable.default_thumbnail);
-		                }
-			        } catch (Exception e) {
-			            Log.e(TAG, "file io exception");
-			        }
-			        
-			    } else {
-			        ((ImageView)convertView.findViewById(R.id.thumbnail))
-                        .setImageResource(R.drawable.default_thumbnail);
-			    }
-			    
-			}
-			
-			((TextView)convertView.findViewById(R.id.title)).setText(f.title);
-			
-			//show file size
-			String fileSize = FileUtils.showFileSize(f.file_size);
-			fileSize += "   " + f.resolution;
-			((TextView)convertView.findViewById(R.id.file_size)).setText(fileSize);
-			
-			//show file duration
-			String duration = DateUtils.formatElapsedTime(f.duration);
-			((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
-			return convertView;
-		}
-		
 	}
 	
 	//scan sdcard
@@ -588,7 +531,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         @Override
         protected void onPostExecute(ArrayList<PFile> result) {
             super.onPostExecute(result);
-            mAdapter = new FileAdapter(getActivity(), result);
+            mAdapter = new FileAdapter(getActivity(), R.layout.fragment_file_item, result);
             mListView.setAdapter(mAdapter);
             progressDialog.dismiss();
         }
