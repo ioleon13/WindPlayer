@@ -33,4 +33,7 @@
 	<string name="search_hint">Search video</string>
 	<string name="search_result_title">Search result: %d</string>
 	<string name="search_history">%d results</string>
+	<string name="muti_select_all">Select All</string>
+    <string name="menu_select_none">Unselect All</string>
+    <string name="delete_confirm">Delete</string>
 </resources>

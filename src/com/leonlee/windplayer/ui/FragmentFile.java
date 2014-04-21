@@ -6,6 +6,7 @@ import io.vov.vitamio.provider.MediaStore.Video;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
@@ -42,6 +43,7 @@ import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.text.InputFilter;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -83,6 +85,13 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	private ActionBar mActionBar;
 	private SearchView mSearchView;
 	private MenuItem mSearchItem;
+	
+	//action mode, select actionbar
+	private MenuItem mSelectMenuItem;
+    private ActionMode mActionMode;
+    private View mSelectActionBarView;
+    private TextView mSelectedCnt;
+    private HashSet<Object> mSelectSet = new HashSet<Object>();
 	
 	private static ArrayList<PFile> mFileArray;
 	
@@ -187,6 +196,72 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         });*/
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.action_delete:
+            
+            break;
+
+        default:
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * start multiselect delete actionmode
+     */
+    private void startSelectMode() {
+        
+    }
+    
+    /**
+     * actionmode callback
+     */
+    private ActionMode.Callback mCallback = new ActionMode.Callback() {
+        
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+        
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.multi_select_menu, menu);
+            mSelectMenuItem = menu.findItem(R.id.select_all);
+            MenuItem item = menu.findItem(R.id.action_confirm);
+            item.setTitle(getString(R.string.delete_confirm));
+            mSelectSet.clear();
+            
+            //select actionbar view
+            if (mSelectActionBarView == null) {
+                mSelectActionBarView = LayoutInflater.from(getActivity())
+                        .inflate(R.layout.multi_select_actionbar, null);
+                mSelectedCnt = (TextView)mSelectActionBarView.findViewById(R.id.selected_count);
+                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+            }
+            
+            mode.setCustomView(mSelectActionBarView);
+            return true;
+        }
+        
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+    };
 
     /**
      * force show overflow menu

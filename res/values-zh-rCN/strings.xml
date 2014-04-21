@@ -32,4 +32,7 @@
     <string name="search_hint">搜索视频</string>
     <string name="search_result_title">%d 项搜索结果</string>
     <string name="search_history">%d 项搜索结果</string>
+    <string name="muti_select_all">"全选"</string>
+    <string name="menu_select_none">"取消全选"</string>
+    <string name="delete_confirm">删除</string>
 </resources>
