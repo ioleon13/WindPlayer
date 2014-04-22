@@ -124,6 +124,15 @@ public class MediaBusiness {
         resolver.delete(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, where, selectionArgs);
     }
     
+    public static void deleteFile(final Context ctx, final int id) {
+        ContentResolver resolver = ctx.getContentResolver();
+        String where = MediaStore.Video.Media._ID + "=?";
+        String[] selectionArgs = new String[] {
+                id+""
+        };
+        resolver.delete(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, where, selectionArgs);
+    }
+    
     /**
      * query the file list
      */

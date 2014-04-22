@@ -91,7 +91,9 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     private ActionMode mActionMode;
     private View mSelectActionBarView;
     private TextView mSelectedCnt;
-    private HashSet<Object> mSelectSet = new HashSet<Object>();
+    private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
+    private static boolean mIsSelectAll = false;
+    private boolean mIsSelectMode = false;
 	
 	private static ArrayList<PFile> mFileArray;
 	
@@ -201,7 +203,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.action_delete:
-            
+            startSelectMode();
             break;
 
         default:
@@ -215,7 +217,8 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
      * start multiselect delete actionmode
      */
     private void startSelectMode() {
-        
+        mActionMode = mListView.startActionMode(mCallback);
+        setSelectMode(true);
     }
     
     /**
@@ -226,13 +229,15 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             // TODO Auto-generated method stub
-            return false;
+            return true;
         }
         
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            // TODO Auto-generated method stub
-            
+            mSelectSet.clear();
+            mSelectActionBarView = null;
+            mSelectedCnt = null;
+            setSelectMode(false);
         }
         
         @Override
@@ -258,10 +263,86 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            // TODO Auto-generated method stub
-            return false;
+            switch (item.getItemId()) {
+            case R.id.action_confirm:
+                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+                    mIsSelectAll = true;
+                } else {
+                    mIsSelectAll = false;
+                }
+                Log.d(TAG, "IsSelectAll=" + mIsSelectAll);
+                
+                //confirm delete
+                confirmDelete(mSelectSet);
+                mode.finish();
+                break;
+                
+            case R.id.select_all:
+                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+                    unSelectAll();
+                } else {
+                    selectAll();
+                }
+                break;
+
+            default:
+                break;
+            }
+            return true;
         }
     };
+    
+    /**
+     * confirm delete
+     */
+    private void confirmDelete(ArrayList<PFile> selectedList) {
+        
+    }
+    
+    /**
+     * unselect all
+     */
+    private void unSelectAll() {
+        mSelectSet.clear();
+        mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+        //mAdapter.notifyDataSetChanged();
+        updateSelectTitle();
+    }
+    
+    /**
+     * select all
+     */
+    private void selectAll() {
+        int count = mFileArray.size();
+        mSelectedCnt.setText(Integer.toString(count));
+        mSelectSet = mFileArray;
+        //mAdapter.notifyDataSetChanged();
+        updateSelectTitle();
+    }
+    
+    /**
+     * update select title "Select All" <-> "UnSelect All"
+     */
+    public void updateSelectTitle() {
+        if (isSelectMode() && mSelectMenuItem != null) {
+            if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+                mSelectMenuItem.setTitle(getString(R.string.menu_select_none));
+            } else {
+                mSelectMenuItem.setTitle(getString(R.string.muti_select_all));
+            }
+        }
+    }
+    
+    public boolean isSelectMode() {
+        return mIsSelectMode;
+    }
+    
+    private void setSelectMode(boolean isSelectMode) {
+        if (mIsSelectMode != isSelectMode) {
+            mIsSelectMode = isSelectMode;
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     /**
      * force show overflow menu
