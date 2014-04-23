@@ -218,6 +218,8 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
      */
     private void startSelectMode() {
         mActionMode = mListView.startActionMode(mCallback);
+        mAdapter.setSelectMode(true);
+        mAdapter.notifyDataSetChanged();
         setSelectMode(true);
     }
     

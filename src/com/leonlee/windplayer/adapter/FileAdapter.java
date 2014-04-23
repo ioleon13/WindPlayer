@@ -15,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FileAdapter extends ArrayAdapter<PFile> {
     private Context mContext;
     private int mRid;
+    private boolean mIsSelectMode = false;
     
     private String TAG = "FileAdapter";
 
@@ -28,6 +30,10 @@ public class FileAdapter extends ArrayAdapter<PFile> {
         super(context, id, list);
         mRid = id;
         mContext = context;
+    }
+    
+    public void setSelectMode(boolean isSelectMode) {
+        mIsSelectMode = isSelectMode;
     }
 
     @Override
@@ -77,6 +83,12 @@ public class FileAdapter extends ArrayAdapter<PFile> {
         //show file duration
         String duration = DateUtils.formatElapsedTime(f.duration);
         ((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
+        
+        //show checkbox
+        if (mIsSelectMode) {
+            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.VISIBLE);
+            //((CheckBox)convertView.findViewById(R.id.select_check)).setChecked(checked);
+        }
         return convertView;
     }
 }
