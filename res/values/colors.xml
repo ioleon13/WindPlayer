@@ -10,4 +10,5 @@
     <color name="background">#ffc3ddea</color>
     <color name="yellow">#ffffcc00</color>
     <color name="title">#ff274462</color>
+    <color name="selector">#ff99ccff</color>
 </resources>

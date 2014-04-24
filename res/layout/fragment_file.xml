@@ -32,7 +32,7 @@
                 android:divider="@drawable/ic_line"
                 android:drawSelectorOnTop="false"
                 android:fadingEdge="none"
-                android:listSelector="@android:color/transparent"
+                android:listSelector="@color/selector"
                 android:scrollbars="none" />
             
             <TextView android:id="@+id/first_letter_overlay"

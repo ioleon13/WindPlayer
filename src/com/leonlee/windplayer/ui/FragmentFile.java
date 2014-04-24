@@ -57,6 +57,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -107,10 +108,18 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final PFile f = mAdapter.getItem(position);
-		Intent intent = new Intent(getActivity(), WindPlayerActivity.class);
-		//intent.putExtra("path", f.path);
-		intent.setData(Uri.parse(f.path));
-		startActivity(intent);
+		
+		if (mIsSelectMode) {
+		    boolean isChecked = 
+		            ((CheckBox)view.findViewById(R.id.select_check)).isChecked();
+		    ((CheckBox)view.findViewById(R.id.select_check)).setChecked(!isChecked);
+		    updateCheckState(view, f, !isChecked);
+		} else {
+		    Intent intent = new Intent(getActivity(), WindPlayerActivity.class);
+		    //intent.putExtra("path", f.path);
+		    intent.setData(Uri.parse(f.path));
+		    startActivity(intent);
+		}
 	}
 
 	@Override
@@ -218,8 +227,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
      */
     private void startSelectMode() {
         mActionMode = mListView.startActionMode(mCallback);
-        mAdapter.setSelectMode(true);
-        mAdapter.notifyDataSetChanged();
         setSelectMode(true);
     }
     
@@ -236,6 +243,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            Log.d(TAG, "click to exit action mode");
             mSelectSet.clear();
             mSelectActionBarView = null;
             mSelectedCnt = null;
@@ -342,8 +350,27 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     private void setSelectMode(boolean isSelectMode) {
         if (mIsSelectMode != isSelectMode) {
             mIsSelectMode = isSelectMode;
+            Log.d(TAG, "adapter set select mode: " + isSelectMode);
+            mAdapter.setSelectMode(isSelectMode);
             mAdapter.notifyDataSetChanged();
         }
+    }
+    
+    /**
+     * 
+     */
+    private void updateCheckState(View view, PFile f, boolean checked) {
+        if (isSelectMode() && (view != null)) {
+            if (f != null) {
+                if (checked) {
+                    mSelectSet.add(f);
+                } else {
+                    mSelectSet.remove(f);
+                }
+                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+            }
+        }
+        updateSelectTitle();
     }
 
     /**

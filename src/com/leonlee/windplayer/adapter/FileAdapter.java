@@ -87,7 +87,8 @@ public class FileAdapter extends ArrayAdapter<PFile> {
         //show checkbox
         if (mIsSelectMode) {
             ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.VISIBLE);
-            //((CheckBox)convertView.findViewById(R.id.select_check)).setChecked(checked);
+        } else {
+            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.GONE);
         }
         return convertView;
     }
