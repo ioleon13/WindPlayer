@@ -1,12 +1,8 @@
 package com.leonlee.windplayer.ui;
 
-import io.vov.vitamio.ThumbnailUtils;
-import io.vov.vitamio.provider.MediaStore.Video;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
@@ -32,19 +28,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.text.InputFilter;
-import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -53,14 +44,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -68,10 +55,9 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class FragmentFile extends FragmentBase implements OnItemClickListener, OnClickListener {
+public class FragmentFile extends FragmentBase implements OnItemClickListener {
     private String TAG = "FragmentFile";
 	private MultiSelectFileAdapter mAdapter;
 	private TextView first_letter_overlay;
@@ -212,17 +198,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, O
         
         return false;
     }
-    
-    /**
-     * check box click listener
-     */
-    private OnClickListener checkClickListener = new OnClickListener() {
-        
-        @Override
-        public void onClick(View v) {
-            Log.e(TAG, "check box was clicked" + v.toString());
-        }
-    };
     
 
     /**
@@ -674,12 +649,5 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, O
     public void onDestroyView() {
         Log.i(TAG, "onDestroyView() set hidden to true");
         super.onDestroyView();
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v instanceof Checkable) {
-            Log.e(TAG, "clicked the check box");
-        }
     }
 }
