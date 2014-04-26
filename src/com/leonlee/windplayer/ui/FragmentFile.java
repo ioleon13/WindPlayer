@@ -12,6 +12,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.adapter.FileAdapter;
+import com.leonlee.windplayer.adapter.MultiSelectFileAdapter;
 import com.leonlee.windplayer.business.FileBusiness;
 import com.leonlee.windplayer.business.MediaBusiness;
 import com.leonlee.windplayer.database.SQLiteHelper;
@@ -52,12 +53,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -68,9 +71,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class FragmentFile extends FragmentBase implements OnItemClickListener {
+public class FragmentFile extends FragmentBase implements OnItemClickListener, OnClickListener {
     private String TAG = "FragmentFile";
-	private FileAdapter mAdapter;
+	private MultiSelectFileAdapter mAdapter;
 	private TextView first_letter_overlay;
 	private ImageView alphabet_scroller;
 	
@@ -87,15 +90,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	private SearchView mSearchView;
 	private MenuItem mSearchItem;
 	
-	//action mode, select actionbar
-	private MenuItem mSelectMenuItem;
-    private ActionMode mActionMode;
-    private View mSelectActionBarView;
-    private TextView mSelectedCnt;
-    private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
-    private static boolean mIsSelectAll = false;
-    private boolean mIsSelectMode = false;
-	
 	private static ArrayList<PFile> mFileArray;
 	
 	public static ArrayList<PFile> getFileArray() {
@@ -109,11 +103,8 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final PFile f = mAdapter.getItem(position);
 		
-		if (mIsSelectMode) {
-		    boolean isChecked = 
-		            ((CheckBox)view.findViewById(R.id.select_check)).isChecked();
-		    ((CheckBox)view.findViewById(R.id.select_check)).setChecked(!isChecked);
-		    updateCheckState(view, f, !isChecked);
+		if (mAdapter.isSelectMode()) {
+		    mAdapter.updateCheckState(view, f);
 		} else {
 		    Intent intent = new Intent(getActivity(), WindPlayerActivity.class);
 		    //intent.putExtra("path", f.path);
@@ -212,7 +203,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.action_delete:
-            startSelectMode();
+            mAdapter.startSelectMode();
             break;
 
         default:
@@ -223,155 +214,16 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     }
     
     /**
-     * start multiselect delete actionmode
+     * check box click listener
      */
-    private void startSelectMode() {
-        mActionMode = mListView.startActionMode(mCallback);
-        setSelectMode(true);
-    }
-    
-    /**
-     * actionmode callback
-     */
-    private ActionMode.Callback mCallback = new ActionMode.Callback() {
+    private OnClickListener checkClickListener = new OnClickListener() {
         
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            // TODO Auto-generated method stub
-            return true;
-        }
-        
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            Log.d(TAG, "click to exit action mode");
-            mSelectSet.clear();
-            mSelectActionBarView = null;
-            mSelectedCnt = null;
-            setSelectMode(false);
-        }
-        
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.multi_select_menu, menu);
-            mSelectMenuItem = menu.findItem(R.id.select_all);
-            MenuItem item = menu.findItem(R.id.action_confirm);
-            item.setTitle(getString(R.string.delete_confirm));
-            mSelectSet.clear();
-            
-            //select actionbar view
-            if (mSelectActionBarView == null) {
-                mSelectActionBarView = LayoutInflater.from(getActivity())
-                        .inflate(R.layout.multi_select_actionbar, null);
-                mSelectedCnt = (TextView)mSelectActionBarView.findViewById(R.id.selected_count);
-                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
-            }
-            
-            mode.setCustomView(mSelectActionBarView);
-            return true;
-        }
-        
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-            case R.id.action_confirm:
-                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
-                    mIsSelectAll = true;
-                } else {
-                    mIsSelectAll = false;
-                }
-                Log.d(TAG, "IsSelectAll=" + mIsSelectAll);
-                
-                //confirm delete
-                confirmDelete(mSelectSet);
-                mode.finish();
-                break;
-                
-            case R.id.select_all:
-                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
-                    unSelectAll();
-                } else {
-                    selectAll();
-                }
-                break;
-
-            default:
-                break;
-            }
-            return true;
+        public void onClick(View v) {
+            Log.e(TAG, "check box was clicked" + v.toString());
         }
     };
     
-    /**
-     * confirm delete
-     */
-    private void confirmDelete(ArrayList<PFile> selectedList) {
-        
-    }
-    
-    /**
-     * unselect all
-     */
-    private void unSelectAll() {
-        mSelectSet.clear();
-        mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
-        //mAdapter.notifyDataSetChanged();
-        updateSelectTitle();
-    }
-    
-    /**
-     * select all
-     */
-    private void selectAll() {
-        int count = mFileArray.size();
-        mSelectedCnt.setText(Integer.toString(count));
-        mSelectSet = mFileArray;
-        //mAdapter.notifyDataSetChanged();
-        updateSelectTitle();
-    }
-    
-    /**
-     * update select title "Select All" <-> "UnSelect All"
-     */
-    public void updateSelectTitle() {
-        if (isSelectMode() && mSelectMenuItem != null) {
-            if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
-                mSelectMenuItem.setTitle(getString(R.string.menu_select_none));
-            } else {
-                mSelectMenuItem.setTitle(getString(R.string.muti_select_all));
-            }
-        }
-    }
-    
-    public boolean isSelectMode() {
-        return mIsSelectMode;
-    }
-    
-    private void setSelectMode(boolean isSelectMode) {
-        if (mIsSelectMode != isSelectMode) {
-            mIsSelectMode = isSelectMode;
-            Log.d(TAG, "adapter set select mode: " + isSelectMode);
-            mAdapter.setSelectMode(isSelectMode);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-    
-    /**
-     * 
-     */
-    private void updateCheckState(View view, PFile f, boolean checked) {
-        if (isSelectMode() && (view != null)) {
-            if (f != null) {
-                if (checked) {
-                    mSelectSet.add(f);
-                } else {
-                    mSelectSet.remove(f);
-                }
-                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
-            }
-        }
-        updateSelectTitle();
-    }
 
     /**
      * force show overflow menu
@@ -606,7 +458,10 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	}
 	
 	private void showList(ArrayList<PFile> fileList) {
-	    mAdapter = new FileAdapter(getActivity(), R.layout.fragment_file_item, fileList);
+	    mAdapter = new MultiSelectFileAdapter(getActivity(), R.layout.fragment_file_item, fileList);
+	    //mAdapter.setCheckClickListener(checkClickListener);
+	    mAdapter.setListView(mListView);
+	    mAdapter.setFileArray(mFileArray);
         mListView.setAdapter(mAdapter);
         
         mLoadingLayout.setVisibility(View.GONE);
@@ -716,7 +571,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         @Override
         protected void onPostExecute(ArrayList<PFile> result) {
             super.onPostExecute(result);
-            mAdapter = new FileAdapter(getActivity(), R.layout.fragment_file_item, result);
+            mAdapter = new MultiSelectFileAdapter(getActivity(), R.layout.fragment_file_item, result);
             mListView.setAdapter(mAdapter);
             progressDialog.dismiss();
         }
@@ -819,5 +674,12 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
     public void onDestroyView() {
         Log.i(TAG, "onDestroyView() set hidden to true");
         super.onDestroyView();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof Checkable) {
+            Log.e(TAG, "clicked the check box");
+        }
     }
 }
