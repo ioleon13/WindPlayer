@@ -1,9 +1,13 @@
 package com.leonlee.windplayer.adapter;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -11,12 +15,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
+import com.leonlee.windplayer.util.FileUtils;
 
 public class MultiSelectFileAdapter extends FileAdapter {
     private String TAG = "MultiSelectFileAdapter";
@@ -32,18 +42,24 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private ListView mListView;
     
     private ArrayList<PFile> mFileArray;
+    
+    //save selected state
+    private static HashMap<Integer, Boolean> isSelectedStates;
+    private void initSelectedStates() {
+        isSelectedStates = new HashMap<Integer, Boolean>();
+        for (int i = 0; i < mFileArray.size(); ++i) {
+            isSelectedStates.put(i, false);
+        }
+    }
 
     public MultiSelectFileAdapter(Context context, int id, ArrayList<PFile> list) {
         super(context, id, list);
-        // TODO Auto-generated constructor stub
+        mFileArray = list;
+        initSelectedStates();
     }
     
     public void setListView(ListView view) {
         mListView = view;
-    }
-    
-    public void setFileArray(ArrayList<PFile> fileArray) {
-        mFileArray = fileArray;
     }
     
     public boolean isSelectMode() {
@@ -53,22 +69,26 @@ public class MultiSelectFileAdapter extends FileAdapter {
     /**
      * 
      */
-    public void updateCheckState(View view, PFile f) {
+    public void updateCheckState(View view, PFile f, int position) {
+        if (view == null || f == null) {
+            Log.e(TAG, "updateCheckState view or f was null");
+            return;
+        }
         boolean isChecked = 
                 ((CheckBox)view.findViewById(R.id.select_check)).isChecked();
         ((CheckBox)view.findViewById(R.id.select_check)).setChecked(!isChecked);
-        notifyDataSetChanged();
-        if (isSelectMode() && (view != null)) {
-            if (f != null) {
-                if (!isChecked) {
-                    mSelectSet.add(f);
-                } else {
-                    mSelectSet.remove(f);
-                }
-                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
-            }
+        
+        if (isChecked) {
+            mSelectSet.remove(f);
+            isSelectedStates.put(position, false);
+        } else {
+            mSelectSet.add(f);
+            isSelectedStates.put(position, true);
         }
+        
+        mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
         updateSelectTitle();
+        notifyDataSetChanged();
     }
 
     /**
@@ -175,8 +195,12 @@ public class MultiSelectFileAdapter extends FileAdapter {
         int count = mFileArray.size();
         mSelectedCnt.setText(Integer.toString(count));
         mSelectSet = mFileArray;
-        notifyDataSetChanged();
+        for (int i = 0; i < mFileArray.size(); ++i) {
+            isSelectedStates.put(i, true);
+        }
+        
         updateSelectTitle();
+        notifyDataSetChanged();
     }
     
     /**
@@ -198,5 +222,107 @@ public class MultiSelectFileAdapter extends FileAdapter {
             Log.d(TAG, "adapter set select mode: " + isSelectMode);
             notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        final PFile f = getItem(position);
+        final int itemId = position;
+        
+        if (convertView == null) {
+            final LayoutInflater mInflater = LayoutInflater.from(mContext);
+            convertView = mInflater.inflate(mRid, null);
+        }
+        
+        if (f.is_audio) {
+            ((ImageView)convertView.findViewById(R.id.thumbnail))
+                .setImageResource(R.drawable.default_thumbnail_music);
+        } else {
+            if (f.thumb != null) {
+                /*Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(getActivity(),
+                        f.thumb, Video.Thumbnails.MICRO_KIND);*/
+                try {
+                    File fileThumb = new File(f.thumb);
+                    if (fileThumb.exists() && fileThumb.canRead()) {
+                        ((ImageView)convertView.findViewById(R.id.thumbnail))
+                            .setImageURI(Uri.parse(f.thumb));
+                    } else {
+                        Log.i(TAG, "thumbnail file: " + f.thumb + " is not exist or not readable");
+                        ((ImageView)convertView.findViewById(R.id.thumbnail))
+                            .setImageResource(R.drawable.default_thumbnail);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "file io exception");
+                }
+                
+            } else {
+                ((ImageView)convertView.findViewById(R.id.thumbnail))
+                    .setImageResource(R.drawable.default_thumbnail);
+            }
+            
+        }
+        
+        ((TextView)convertView.findViewById(R.id.title)).setText(f.title);
+        
+        //show file size
+        String fileSize = FileUtils.showFileSize(f.file_size);
+        fileSize += "   " + f.resolution;
+        ((TextView)convertView.findViewById(R.id.file_size)).setText(fileSize);
+        
+        //show file duration
+        String duration = DateUtils.formatElapsedTime(f.duration);
+        ((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
+        
+        //show checkbox
+        if (mIsSelectMode) {
+            CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.select_check);
+            checkBox.setVisibility(View.VISIBLE);
+        
+            /*checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d(TAG, "check box was clicked");
+                    updateCheckBoxClick(isChecked, f, itemId);
+                }
+            });*/
+            checkBox.setOnClickListener(new OnClickListener() {
+                
+                @Override
+                public void onClick(View arg0) {
+                    if (isSelectedStates.get(itemId)) {
+                        mSelectSet.remove(f);
+                        isSelectedStates.put(itemId, false);
+                    } else {
+                        mSelectSet.add(f);
+                        isSelectedStates.put(itemId, true);
+                    }
+                    
+                    mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+                    updateSelectTitle();
+                }
+            });
+            
+            if (position < isSelectedStates.size()) {
+                checkBox.setChecked(isSelectedStates.get(position));
+            }
+        } else {
+            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.GONE);
+        }
+        return convertView;
+    }
+    
+    private void updateCheckBoxClick(boolean isChecked, PFile f, int itemid) {
+        if (isSelectMode()) {
+            if (isChecked) {
+                mSelectSet.add(f);
+                isSelectedStates.put(itemid, true);
+            } else {
+                mSelectSet.remove(f);
+                isSelectedStates.put(itemid, false);
+            }
+            mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+        }
+        updateSelectTitle();
     }
 }

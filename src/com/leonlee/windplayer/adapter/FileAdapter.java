@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 public class FileAdapter extends ArrayAdapter<PFile> {
     protected Context mContext;
-    private int mRid;
+    protected int mRid;
     protected boolean mIsSelectMode = false;
     private OnClickListener mCheckClickListener;
     
@@ -36,67 +36,5 @@ public class FileAdapter extends ArrayAdapter<PFile> {
     
     public void setCheckClickListener(OnClickListener listener) {
         mCheckClickListener = listener;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final PFile f = getItem(position);
-        
-        if (convertView == null) {
-            final LayoutInflater mInflater = LayoutInflater.from(mContext);
-            convertView = mInflater.inflate(mRid, null);
-        }
-        
-        if (f.is_audio) {
-            ((ImageView)convertView.findViewById(R.id.thumbnail))
-                .setImageResource(R.drawable.default_thumbnail_music);
-        } else {
-            if (f.thumb != null) {
-                /*Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(getActivity(),
-                        f.thumb, Video.Thumbnails.MICRO_KIND);*/
-                try {
-                    File fileThumb = new File(f.thumb);
-                    if (fileThumb.exists() && fileThumb.canRead()) {
-                        ((ImageView)convertView.findViewById(R.id.thumbnail))
-                            .setImageURI(Uri.parse(f.thumb));
-                    } else {
-                        Log.i(TAG, "thumbnail file: " + f.thumb + " is not exist or not readable");
-                        ((ImageView)convertView.findViewById(R.id.thumbnail))
-                            .setImageResource(R.drawable.default_thumbnail);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "file io exception");
-                }
-                
-            } else {
-                ((ImageView)convertView.findViewById(R.id.thumbnail))
-                    .setImageResource(R.drawable.default_thumbnail);
-            }
-            
-        }
-        
-        ((TextView)convertView.findViewById(R.id.title)).setText(f.title);
-        
-        //show file size
-        String fileSize = FileUtils.showFileSize(f.file_size);
-        fileSize += "   " + f.resolution;
-        ((TextView)convertView.findViewById(R.id.file_size)).setText(fileSize);
-        
-        //show file duration
-        String duration = DateUtils.formatElapsedTime(f.duration);
-        ((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
-        
-        //show checkbox
-        if (mIsSelectMode) {
-            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.VISIBLE);
-            
-            if (mCheckClickListener != null) {
-                ((CheckBox)convertView.findViewById(R.id.select_check))
-                .setOnClickListener(mCheckClickListener);
-            }
-        } else {
-            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.GONE);
-        }
-        return convertView;
     }
 }

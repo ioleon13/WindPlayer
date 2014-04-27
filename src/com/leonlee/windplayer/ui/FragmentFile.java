@@ -90,7 +90,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		final PFile f = mAdapter.getItem(position);
 		
 		if (mAdapter.isSelectMode()) {
-		    mAdapter.updateCheckState(view, f);
+		    mAdapter.updateCheckState(view, f, position);
 		} else {
 		    Intent intent = new Intent(getActivity(), WindPlayerActivity.class);
 		    //intent.putExtra("path", f.path);
@@ -436,7 +436,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	    mAdapter = new MultiSelectFileAdapter(getActivity(), R.layout.fragment_file_item, fileList);
 	    //mAdapter.setCheckClickListener(checkClickListener);
 	    mAdapter.setListView(mListView);
-	    mAdapter.setFileArray(mFileArray);
         mListView.setAdapter(mAdapter);
         
         mLoadingLayout.setVisibility(View.GONE);
