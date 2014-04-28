@@ -36,4 +36,8 @@
 	<string name="muti_select_all">Select All</string>
     <string name="menu_select_none">Unselect All</string>
     <string name="delete_confirm">Delete</string>
+    <string name="no_file_del">No files deleted</string>
+    <string name="delete_msg">Choose %d items</string>
+    <string name="confirm_dialog_title">Delete?</string>
+    <string name="no">Cancel</string>
 </resources>

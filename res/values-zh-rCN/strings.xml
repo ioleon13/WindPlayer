@@ -35,4 +35,8 @@
     <string name="muti_select_all">"全选"</string>
     <string name="menu_select_none">"取消全选"</string>
     <string name="delete_confirm">删除</string>
+    <string name="no_file_del">没有可删除的文件</string>
+    <string name="delete_msg">选中 %d 项</string>
+    <string name="confirm_dialog_title">"要删除吗？"</string>
+    <string name="no">"取消"</string>
 </resources>

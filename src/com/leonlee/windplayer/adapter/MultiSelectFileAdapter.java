@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
@@ -36,7 +39,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private ActionMode mActionMode;
     private View mSelectActionBarView;
     private TextView mSelectedCnt;
-    private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
+    //private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
     private static boolean mIsSelectAll = false;
     
     private ListView mListView;
@@ -79,14 +82,14 @@ public class MultiSelectFileAdapter extends FileAdapter {
         ((CheckBox)view.findViewById(R.id.select_check)).setChecked(!isChecked);
         
         if (isChecked) {
-            mSelectSet.remove(f);
+            //mSelectSet.remove(f);
             isSelectedStates.put(position, false);
         } else {
-            mSelectSet.add(f);
+            //mSelectSet.add(f);
             isSelectedStates.put(position, true);
         }
         
-        mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+        mSelectedCnt.setText(Integer.toString(getCheckedCount()));
         updateSelectTitle();
         notifyDataSetChanged();
     }
@@ -97,6 +100,15 @@ public class MultiSelectFileAdapter extends FileAdapter {
     public void startSelectMode() {
         mActionMode = mListView.startActionMode(mCallback);
         setSelectMode(true);
+    }
+    
+    private int getCheckedCount() {
+        int count = 0;
+        for (int i = 0; i < mFileArray.size(); ++i) {
+            if (isSelectedStates.get(i))
+                count++;
+        }
+        return count;
     }
     
     /**
@@ -113,7 +125,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             Log.d(TAG, "click to exit action mode");
-            mSelectSet.clear();
+            initSelectedStates();
             mSelectActionBarView = null;
             mSelectedCnt = null;
             setSelectMode(false);
@@ -126,14 +138,14 @@ public class MultiSelectFileAdapter extends FileAdapter {
             mSelectMenuItem = menu.findItem(R.id.select_all);
             MenuItem item = menu.findItem(R.id.action_confirm);
             item.setTitle(mContext.getString(R.string.delete_confirm));
-            mSelectSet.clear();
+            //mSelectSet.clear();
             
             //select actionbar view
             if (mSelectActionBarView == null) {
                 mSelectActionBarView = LayoutInflater.from((Activity) mContext)
                         .inflate(R.layout.multi_select_actionbar, null);
                 mSelectedCnt = (TextView)mSelectActionBarView.findViewById(R.id.selected_count);
-                mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+                mSelectedCnt.setText(Integer.toString(getCheckedCount()));
             }
             
             mode.setCustomView(mSelectActionBarView);
@@ -142,9 +154,11 @@ public class MultiSelectFileAdapter extends FileAdapter {
         
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int checkedCount = getCheckedCount();
+            
             switch (item.getItemId()) {
             case R.id.action_confirm:
-                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+                if (checkedCount > 0 && checkedCount == getCount()) {
                     mIsSelectAll = true;
                 } else {
                     mIsSelectAll = false;
@@ -152,12 +166,12 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 Log.d(TAG, "IsSelectAll=" + mIsSelectAll);
                 
                 //confirm delete
-                confirmDelete(mSelectSet);
+                confirmDelete(checkedCount);
                 mode.finish();
                 break;
                 
             case R.id.select_all:
-                if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+                if (checkedCount > 0 && checkedCount == getCount()) {
                     unSelectAll();
                 } else {
                     selectAll();
@@ -174,16 +188,41 @@ public class MultiSelectFileAdapter extends FileAdapter {
     /**
      * confirm delete
      */
-    private void confirmDelete(ArrayList<PFile> selectedList) {
-        
+    private void confirmDelete(int checkedCount) {
+        if (checkedCount > 0) {
+            confirmDeleteDialog(checkedCount);
+        } else {
+            Toast.makeText(mContext, R.string.no_file_del, Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void confirmDeleteDialog(int checkedCount) {
+        View contents = View.inflate(mContext, R.layout.delete_file_msg_dialog_view, null);
+        TextView msg = (TextView) contents.findViewById(R.id.message);
+        msg.setText(mContext.getString(R.string.delete_msg, checkedCount));
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.confirm_dialog_title)
+               .setIconAttribute(android.R.attr.alertDialogIcon)
+               .setCancelable(true)
+               .setPositiveButton(R.string.file_delete, new DialogInterface.OnClickListener() {
+                
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       // TODO Auto-generated method stub
+                    
+                   }
+               })
+               .setNegativeButton(R.string.no, null)
+               .setView(contents)
+               .show();
     }
     
     /**
      * unselect all
      */
     private void unSelectAll() {
-        mSelectSet.clear();
-        mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+        initSelectedStates();
+        mSelectedCnt.setText(Integer.toString(0));
         notifyDataSetChanged();
         updateSelectTitle();
     }
@@ -192,9 +231,8 @@ public class MultiSelectFileAdapter extends FileAdapter {
      * select all
      */
     private void selectAll() {
-        int count = mFileArray.size();
-        mSelectedCnt.setText(Integer.toString(count));
-        mSelectSet = mFileArray;
+        mSelectedCnt.setText(Integer.toString(getCount()));
+        
         for (int i = 0; i < mFileArray.size(); ++i) {
             isSelectedStates.put(i, true);
         }
@@ -208,7 +246,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
      */
     public void updateSelectTitle() {
         if (isSelectMode() && mSelectMenuItem != null) {
-            if (mSelectSet.size() > 0 && mSelectSet.size() == mFileArray.size()) {
+            if (getCheckedCount() > 0 && getCheckedCount() == getCount()) {
                 mSelectMenuItem.setTitle(mContext.getString(R.string.menu_select_none));
             } else {
                 mSelectMenuItem.setTitle(mContext.getString(R.string.muti_select_all));
@@ -223,20 +261,40 @@ public class MultiSelectFileAdapter extends FileAdapter {
             notifyDataSetChanged();
         }
     }
+    
+    /**
+     * save view holder
+     */
+    static class ViewHolder {
+        ImageView image;
+        TextView title;
+        TextView file_size;
+        TextView duration;
+        CheckBox check_box;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final PFile f = getItem(position);
         final int itemId = position;
+        ViewHolder holder;
         
         if (convertView == null) {
             final LayoutInflater mInflater = LayoutInflater.from(mContext);
             convertView = mInflater.inflate(mRid, null);
+            holder = new ViewHolder();
+            holder.image = (ImageView)convertView.findViewById(R.id.thumbnail);
+            holder.title = (TextView)convertView.findViewById(R.id.title);
+            holder.file_size = (TextView)convertView.findViewById(R.id.file_size);
+            holder.duration = (TextView)convertView.findViewById(R.id.file_duration);
+            holder.check_box = (CheckBox)convertView.findViewById(R.id.select_check);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
         
         if (f.is_audio) {
-            ((ImageView)convertView.findViewById(R.id.thumbnail))
-                .setImageResource(R.drawable.default_thumbnail_music);
+            holder.image.setImageResource(R.drawable.default_thumbnail_music);
         } else {
             if (f.thumb != null) {
                 /*Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(getActivity(),
@@ -244,38 +302,35 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 try {
                     File fileThumb = new File(f.thumb);
                     if (fileThumb.exists() && fileThumb.canRead()) {
-                        ((ImageView)convertView.findViewById(R.id.thumbnail))
-                            .setImageURI(Uri.parse(f.thumb));
+                        holder.image.setImageURI(Uri.parse(f.thumb));
                     } else {
                         Log.i(TAG, "thumbnail file: " + f.thumb + " is not exist or not readable");
-                        ((ImageView)convertView.findViewById(R.id.thumbnail))
-                            .setImageResource(R.drawable.default_thumbnail);
+                        holder.image.setImageResource(R.drawable.default_thumbnail);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "file io exception");
                 }
                 
             } else {
-                ((ImageView)convertView.findViewById(R.id.thumbnail))
-                    .setImageResource(R.drawable.default_thumbnail);
+                holder.image.setImageResource(R.drawable.default_thumbnail);
             }
             
         }
         
-        ((TextView)convertView.findViewById(R.id.title)).setText(f.title);
+        holder.title.setText(f.title);
         
         //show file size
         String fileSize = FileUtils.showFileSize(f.file_size);
         fileSize += "   " + f.resolution;
-        ((TextView)convertView.findViewById(R.id.file_size)).setText(fileSize);
+        holder.file_size.setText(fileSize);
         
         //show file duration
         String duration = DateUtils.formatElapsedTime(f.duration);
-        ((TextView)convertView.findViewById(R.id.file_duration)).setText(duration);
+        holder.duration.setText(duration);
         
         //show checkbox
         if (mIsSelectMode) {
-            CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.select_check);
+            CheckBox checkBox = holder.check_box;
             checkBox.setVisibility(View.VISIBLE);
         
             /*checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -291,14 +346,14 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 @Override
                 public void onClick(View arg0) {
                     if (isSelectedStates.get(itemId)) {
-                        mSelectSet.remove(f);
+                        //mSelectSet.remove(f);
                         isSelectedStates.put(itemId, false);
                     } else {
-                        mSelectSet.add(f);
+                        //mSelectSet.add(f);
                         isSelectedStates.put(itemId, true);
                     }
                     
-                    mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+                    mSelectedCnt.setText(Integer.toString(getCheckedCount()));
                     updateSelectTitle();
                 }
             });
@@ -307,7 +362,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 checkBox.setChecked(isSelectedStates.get(position));
             }
         } else {
-            ((CheckBox)convertView.findViewById(R.id.select_check)).setVisibility(View.GONE);
+            holder.check_box.setVisibility(View.GONE);
         }
         return convertView;
     }
@@ -315,13 +370,13 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private void updateCheckBoxClick(boolean isChecked, PFile f, int itemid) {
         if (isSelectMode()) {
             if (isChecked) {
-                mSelectSet.add(f);
+                //mSelectSet.add(f);
                 isSelectedStates.put(itemid, true);
             } else {
-                mSelectSet.remove(f);
+                //mSelectSet.remove(f);
                 isSelectedStates.put(itemid, false);
             }
-            mSelectedCnt.setText(Integer.toString(mSelectSet.size()));
+            mSelectedCnt.setText(Integer.toString(getCheckedCount()));
         }
         updateSelectTitle();
     }
