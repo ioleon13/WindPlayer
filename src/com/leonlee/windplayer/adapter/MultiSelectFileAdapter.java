@@ -3,6 +3,7 @@ package com.leonlee.windplayer.adapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
+import com.leonlee.windplayer.util.AsyncDeleteTask;
 import com.leonlee.windplayer.util.FileUtils;
 
 public class MultiSelectFileAdapter extends FileAdapter {
@@ -39,12 +41,14 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private ActionMode mActionMode;
     private View mSelectActionBarView;
     private TextView mSelectedCnt;
-    //private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
+    private ArrayList<PFile> mSelectSet = new ArrayList<PFile>();
     private static boolean mIsSelectAll = false;
     
     private ListView mListView;
     
     private ArrayList<PFile> mFileArray;
+    
+    private final static int RUN_ASYNCTASK_NUM = 1;
     
     //save selected state
     private static HashMap<Integer, Boolean> isSelectedStates;
@@ -82,10 +86,10 @@ public class MultiSelectFileAdapter extends FileAdapter {
         ((CheckBox)view.findViewById(R.id.select_check)).setChecked(!isChecked);
         
         if (isChecked) {
-            //mSelectSet.remove(f);
+            mSelectSet.remove(f);
             isSelectedStates.put(position, false);
         } else {
-            //mSelectSet.add(f);
+            mSelectSet.add(f);
             isSelectedStates.put(position, true);
         }
         
@@ -138,7 +142,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
             mSelectMenuItem = menu.findItem(R.id.select_all);
             MenuItem item = menu.findItem(R.id.action_confirm);
             item.setTitle(mContext.getString(R.string.delete_confirm));
-            //mSelectSet.clear();
+            mSelectSet.clear();
             
             //select actionbar view
             if (mSelectActionBarView == null) {
@@ -208,8 +212,9 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       // TODO Auto-generated method stub
-                    
+                       AsyncDeleteTask task = new AsyncDeleteTask(mContext, mSelectSet, mFileArray);
+                       
+                       task.executeOnExecutor(Executors.newFixedThreadPool(RUN_ASYNCTASK_NUM), "");
                    }
                })
                .setNegativeButton(R.string.no, null)
@@ -223,6 +228,7 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private void unSelectAll() {
         initSelectedStates();
         mSelectedCnt.setText(Integer.toString(0));
+        mSelectSet.clear();
         notifyDataSetChanged();
         updateSelectTitle();
     }
@@ -233,8 +239,10 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private void selectAll() {
         mSelectedCnt.setText(Integer.toString(getCount()));
         
+        mSelectSet.clear();
         for (int i = 0; i < mFileArray.size(); ++i) {
             isSelectedStates.put(i, true);
+            mSelectSet.add(mFileArray.get(i));
         }
         
         updateSelectTitle();
@@ -346,10 +354,10 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 @Override
                 public void onClick(View arg0) {
                     if (isSelectedStates.get(itemId)) {
-                        //mSelectSet.remove(f);
+                        mSelectSet.remove(f);
                         isSelectedStates.put(itemId, false);
                     } else {
-                        //mSelectSet.add(f);
+                        mSelectSet.add(f);
                         isSelectedStates.put(itemId, true);
                     }
                     
@@ -370,10 +378,10 @@ public class MultiSelectFileAdapter extends FileAdapter {
     private void updateCheckBoxClick(boolean isChecked, PFile f, int itemid) {
         if (isSelectMode()) {
             if (isChecked) {
-                //mSelectSet.add(f);
+                mSelectSet.add(f);
                 isSelectedStates.put(itemid, true);
             } else {
-                //mSelectSet.remove(f);
+                mSelectSet.remove(f);
                 isSelectedStates.put(itemid, false);
             }
             mSelectedCnt.setText(Integer.toString(getCheckedCount()));
