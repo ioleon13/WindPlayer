@@ -21,18 +21,17 @@ public class AsyncDeleteTask extends AsyncTask<Object, Integer, Void> {
     
     private Context mContext;
     private ArrayList<PFile> mDeleteList;
-    private ArrayList<PFile> mFileArray;
     private int mTotalCount;
     private ProgressDialog mProgressDialog;
     private boolean mIsStop = false;
     
     private OnDeletedListener mOnDeletedListener;
+    private OnDeleteEndListener mOnDeleteEndListener;
     
-    public AsyncDeleteTask(Context ctx, ArrayList<PFile> delList, ArrayList<PFile> allList) {
+    public AsyncDeleteTask(Context ctx, ArrayList<PFile> delList) {
         mContext = ctx;
         mDeleteList = delList;
         mTotalCount = delList.size();
-        mFileArray = allList;
         
         if (mProgressDialog == null) {
             mProgressDialog = createProgressDialog();
@@ -41,6 +40,10 @@ public class AsyncDeleteTask extends AsyncTask<Object, Integer, Void> {
     
     public void setOnDeletedListener(OnDeletedListener listener) {
         mOnDeletedListener = listener;
+    }
+    
+    public void setOnDeleteEndListener(OnDeleteEndListener listener) {
+        mOnDeleteEndListener = listener;
     }
     
     private ProgressDialog createProgressDialog() {
@@ -106,9 +109,14 @@ public class AsyncDeleteTask extends AsyncTask<Object, Integer, Void> {
         Log.i(TAG, "AsyncDeleteTask end...");
         
         mProgressDialog.dismiss();
+        mOnDeleteEndListener.onDeleteEnd(this);
     }
 
     public interface OnDeletedListener {
         void onDeleted(AsyncDeleteTask task, PFile f);
+    }
+    
+    public interface OnDeleteEndListener {
+        void onDeleteEnd(AsyncDeleteTask task);
     }
 }

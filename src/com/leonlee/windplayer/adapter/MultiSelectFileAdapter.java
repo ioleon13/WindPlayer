@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
 import com.leonlee.windplayer.util.AsyncDeleteTask;
+import com.leonlee.windplayer.util.AsyncDeleteTask.OnDeleteEndListener;
+import com.leonlee.windplayer.util.AsyncDeleteTask.OnDeletedListener;
 import com.leonlee.windplayer.util.FileUtils;
 
 public class MultiSelectFileAdapter extends FileAdapter {
@@ -212,8 +214,9 @@ public class MultiSelectFileAdapter extends FileAdapter {
                 
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       AsyncDeleteTask task = new AsyncDeleteTask(mContext, mSelectSet, mFileArray);
-                       
+                       AsyncDeleteTask task = new AsyncDeleteTask(mContext, mSelectSet);
+                       task.setOnDeletedListener(mDeletedListener);
+                       task.setOnDeleteEndListener(mDeleteEndListener);
                        task.executeOnExecutor(Executors.newFixedThreadPool(RUN_ASYNCTASK_NUM), "");
                    }
                })
@@ -221,6 +224,24 @@ public class MultiSelectFileAdapter extends FileAdapter {
                .setView(contents)
                .show();
     }
+    
+    private OnDeletedListener mDeletedListener = new OnDeletedListener() {
+        
+        @Override
+        public void onDeleted(AsyncDeleteTask task, PFile f) {
+            mFileArray.remove(f);
+        }
+    };
+    
+    private OnDeleteEndListener mDeleteEndListener = new OnDeleteEndListener() {
+        
+        @Override
+        public void onDeleteEnd(AsyncDeleteTask task) {
+            Log.i(TAG, "Delete end, refresh ui");
+            notifyDataSetChanged();
+        }
+    };
+    
     
     /**
      * unselect all
