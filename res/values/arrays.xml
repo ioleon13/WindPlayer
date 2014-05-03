@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="content_list">
+        <item>Local Video</item>
+        <item>TV</item>
+        <item>VOD</item>
+        <item>Settings</item>
+    </string-array>
+</resources>

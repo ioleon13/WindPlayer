@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -21,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.RadioButton;
 
 public class MainFragmentActivity extends FragmentActivity implements OnClickListener{
@@ -30,6 +33,11 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	//private ActionBar mActionBar;
 	
 	private String TAG = "MainFragmentActivity";
+	
+	//navigation drawer
+	private String[] mContentList;
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
 
 	@SuppressLint("NewApi")
     @Override
@@ -50,6 +58,13 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		mPager.setOnPageChangeListener(mPagerListener);
 		
 		mPager.setAdapter(mAdapter);
+		
+		//navigation drawer
+		mContentList = getResources().getStringArray(R.array.content_list);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+		        R.layout.drawer_list_item, mContentList));
 		
 		//forceShowOverflowMenu();
 		

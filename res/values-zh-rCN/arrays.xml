@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="content_list">
+        <item>本地视频</item>
+        <item>电视直播</item>
+        <item>视频点播</item>
+        <item>设置</item>
+    </string-array>
+</resources>
