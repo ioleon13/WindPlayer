@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -62,17 +64,31 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		//navigation drawer
 		mContentList = getResources().getStringArray(R.array.content_list);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		
+		// set a custom shadow that overlays the main content when the drawer opens
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+		
+		// set up the drawer's list view with items and click listener
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
 		        R.layout.drawer_list_item, mContentList));
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		
-		//forceShowOverflowMenu();
+		// enable ActionBar app icon to behave as action to toggle nav drawer
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
 		
-		/*mActionBar = getActionBar();
-		mActionBar.setTitle(R.string.title_file);
-		mActionBar.setDisplayHomeAsUpEnabled(true);
-		mActionBar.show();*/
 	}
+	
+	/**
+	 * The click listner for ListView in the navigation drawer
+	 */
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            
+        }
+    }
 
     //@Override
     /*public boolean onCreateOptionsMenu(Menu menu) {
