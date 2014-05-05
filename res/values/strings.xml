@@ -40,4 +40,6 @@
     <string name="delete_msg">Choose %d items</string>
     <string name="confirm_dialog_title">Delete?</string>
     <string name="no">Cancel</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

@@ -9,6 +9,7 @@ import com.leonlee.windplayer.R;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -40,6 +41,7 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	private String[] mContentList;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
 
 	@SuppressLint("NewApi")
     @Override
@@ -78,9 +80,33 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		
+		mDrawerToggle = new ActionBarDrawerToggle(this,
+		        mDrawerLayout,
+		        R.drawable.ic_drawer,
+		        R.string.drawer_open,
+		        R.string.drawer_close) {
+		    public void onDrawerClosed(View view) {
+		        Log.e(TAG, "drawer closed");
+                //getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                Log.e(TAG, "drawer opened");
+                //getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+		};
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 	
-	/**
+	@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // TODO Auto-generated method stub
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
 	 * The click listner for ListView in the navigation drawer
 	 */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {

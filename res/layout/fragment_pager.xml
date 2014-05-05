@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal" >
-    <RadioGroup android:gravity="center_vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton android:id="@+id/radio_file"
-            android:checked="true"
-            style="@style/main_tab_bottom"
-            android:drawableTop="@drawable/video_file"
-            android:text="@string/title_file"/>
-        <RadioButton android:id="@+id/radio_online"
-            style="@style/main_tab_bottom"
-            android:drawableTop="@drawable/video_online"
-            android:text="@string/title_online"/>
-    </RadioGroup>
-    
-    <android.support.v4.view.ViewPager
-        android:background="@color/background"
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">     
-    </android.support.v4.view.ViewPager>
-    
-    <android.support.v4.widget.DrawerLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal" >
+        <RadioGroup android:gravity="center_vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/radio_file"
+                android:checked="true"
+                style="@style/main_tab_bottom"
+                android:drawableTop="@drawable/video_file"
+                android:text="@string/title_file"/>
+            <RadioButton android:id="@+id/radio_online"
+                style="@style/main_tab_bottom"
+                android:drawableTop="@drawable/video_online"
+                android:text="@string/title_online"/>
+        </RadioGroup>
+    
+        <android.support.v4.view.ViewPager
+            android:background="@color/background"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">     
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
     
     <FrameLayout android:id="@+id/content_frame"
         android:layout_width="match_parent"
@@ -44,8 +44,9 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="@color/background"></ListView>
-    
-    </android.support.v4.widget.DrawerLayout>
+        android:background="@color/background">
+        
+    </ListView>
 
-</LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

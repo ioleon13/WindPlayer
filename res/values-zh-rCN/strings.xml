@@ -39,4 +39,6 @@
     <string name="delete_msg">选中 %d 项</string>
     <string name="confirm_dialog_title">"要删除吗？"</string>
     <string name="no">"取消"</string>
+    <string name="drawer_open">打开</string>
+    <string name="drawer_close">关闭</string>
 </resources>
