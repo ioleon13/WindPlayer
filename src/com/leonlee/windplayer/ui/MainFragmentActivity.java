@@ -21,6 +21,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
@@ -102,8 +103,21 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // TODO Auto-generated method stub
+	    boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+	    menu.findItem(R.id.action_search).setVisible(!drawerOpen);
+	    menu.findItem(R.id.action_delete).setVisible(!drawerOpen);
+	    menu.findItem(R.id.action_camera).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+           return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -117,11 +131,11 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
     }
 
     //@Override
-    /*public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_action_menu, menu);
         return super.onCreateOptionsMenu(menu);
-    }*/
+    }
     
     /**
      * force show overflow menu
