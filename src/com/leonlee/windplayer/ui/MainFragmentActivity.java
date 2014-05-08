@@ -8,6 +8,7 @@ import com.leonlee.windplayer.R;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -81,20 +82,17 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		
-		mDrawerToggle = new ActionBarDrawerToggle(this,
+		mDrawerToggle = new ActionBarDrawerToggle(
+		        this,
 		        mDrawerLayout,
 		        R.drawable.ic_drawer,
 		        R.string.drawer_open,
 		        R.string.drawer_close) {
 		    public void onDrawerClosed(View view) {
-		        Log.e(TAG, "drawer closed");
-                //getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                Log.e(TAG, "drawer opened");
-                //getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 		};
@@ -137,6 +135,22 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
         return super.onCreateOptionsMenu(menu);
     }
     
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
     /**
      * force show overflow menu
      */

@@ -146,7 +146,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 	
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main_action_menu, menu);
+        //inflater.inflate(R.menu.main_action_menu, menu);
         
         //Get the SearchView and set configuration
         mSearchItem = menu.findItem(R.id.action_search);
