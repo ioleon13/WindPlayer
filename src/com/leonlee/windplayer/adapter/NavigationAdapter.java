@@ -1,7 +1,5 @@
 package com.leonlee.windplayer.adapter;
 
-import java.util.List;
-
 import com.leonlee.windplayer.R;
 
 import android.content.Context;
@@ -9,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +43,28 @@ public class NavigationAdapter extends ArrayAdapter<String> {
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
+        }
+        
+        holder.title.setText(content);
+        switch (position) {
+        case 0:
+            holder.image.setImageResource(R.drawable.drawer_local_file);
+            break;
+            
+        case 1:
+            holder.image.setImageResource(R.drawable.drawer_tv);
+            break;
+            
+        case 2:
+            holder.image.setImageResource(R.drawable.drawer_vod);
+            break;
+            
+        case 3:
+            holder.image.setImageResource(R.drawable.drawer_setting);
+            break;
+
+        default:
+            break;
         }
         
         return convertView;

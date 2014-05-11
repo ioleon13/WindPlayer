@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import io.vov.vitamio.LibsChecker;
 
 import com.leonlee.windplayer.R;
+import com.leonlee.windplayer.adapter.NavigationAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -44,6 +45,7 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
+	private NavigationAdapter mNavAdapter;
 
 	@SuppressLint("NewApi")
     @Override
@@ -74,8 +76,10 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		
 		// set up the drawer's list view with items and click listener
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-		        R.layout.drawer_list_item, mContentList));
+		mNavAdapter = new NavigationAdapter(getApplicationContext(),
+		        R.layout.drawer_list_item,
+		        mContentList);
+		mDrawerList.setAdapter(mNavAdapter);
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		
 		// enable ActionBar app icon to behave as action to toggle nav drawer

@@ -14,6 +14,7 @@
     <TextView android:id="@+id/content_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/content_icon"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
