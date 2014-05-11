@@ -32,10 +32,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
-public class MainFragmentActivity extends FragmentActivity implements OnClickListener{
+public class MainFragmentActivity extends FragmentActivity{
 	private ViewPager mPager;
-	private RadioButton mRadioFile;
-	private RadioButton mRadioOnline;
+	//private RadioButton mRadioFile;
+	//private RadioButton mRadioOnline;
 	//private ActionBar mActionBar;
 	
 	private String TAG = "MainFragmentActivity";
@@ -58,11 +58,11 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 		
 		setContentView(R.layout.fragment_pager);
 		mPager = (ViewPager)findViewById(R.id.pager);
-		mRadioFile = (RadioButton)findViewById(R.id.radio_file);
-		mRadioOnline = (RadioButton)findViewById(R.id.radio_online);
+		//mRadioFile = (RadioButton)findViewById(R.id.radio_file);
+		//mRadioOnline = (RadioButton)findViewById(R.id.radio_online);
 		
-		mRadioFile.setOnClickListener(this);
-		mRadioOnline.setOnClickListener(this);
+		//mRadioFile.setOnClickListener(this);
+		//mRadioOnline.setOnClickListener(this);
 		mPager.setOnPageChangeListener(mPagerListener);
 		
 		mPager.setAdapter(mAdapter);
@@ -101,6 +101,10 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
             }
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
+		if (arg0 == null) {
+		    selectItem(0);
+		}
 	}
 	
 	@Override
@@ -128,9 +132,16 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            
+            selectItem(position);
         }
     }
+	
+	private void selectItem(int position) {
+	    mPager.setCurrentItem(position);
+	    
+	    mDrawerList.setItemChecked(position, true);
+	    mDrawerLayout.closeDrawer(mDrawerList);
+	}
 
     //@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,11 +216,11 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
                     switch (position) {
                     case 0:
                         //mActionBar.setTitle(R.string.title_file);
-                        mRadioFile.setChecked(true);
+                        //mRadioFile.setChecked(true);
                         break;
                     case 1:
                         //mActionBar.setTitle(R.string.title_online);
-                        mRadioOnline.setChecked(true);
+                        //mRadioOnline.setChecked(true);
                         break;
 
                     default:
@@ -219,8 +230,8 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
 	    
 	};
 
-    @Override
-    public void onClick(View v) {
+    //@Override
+    /*public void onClick(View v) {
         switch (v.getId()) {
         case R.id.radio_file:
             //mActionBar.setTitle(R.string.title_file);
@@ -235,7 +246,7 @@ public class MainFragmentActivity extends FragmentActivity implements OnClickLis
         default:
             break;
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal" >
-        <RadioGroup android:gravity="center_vertical"
+        <!-- <RadioGroup android:gravity="center_vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -22,7 +22,7 @@
                 style="@style/main_tab_bottom"
                 android:drawableTop="@drawable/video_online"
                 android:text="@string/title_online"/>
-        </RadioGroup>
+        </RadioGroup> -->
     
         <android.support.v4.view.ViewPager
             android:background="@color/background"
