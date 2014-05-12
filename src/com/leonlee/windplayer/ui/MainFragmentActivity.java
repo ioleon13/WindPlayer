@@ -141,6 +141,7 @@ public class MainFragmentActivity extends FragmentActivity{
 	    
 	    mDrawerList.setItemChecked(position, true);
 	    mDrawerLayout.closeDrawer(mDrawerList);
+	    getActionBar().setTitle(mContentList[position]);
 	}
 
     //@Override

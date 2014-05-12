@@ -8,6 +8,7 @@ import com.leonlee.windplayer.util.FileUtils;
 import com.leonlee.windplayer.util.XmlReaderHelper;
 
 import android.R.animator;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -52,6 +53,9 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
     public static final String DISPLAY_NAME = "display_name";
     public static final String IS_STREAM = "is_stream";
     
+    //action bar
+    private ActionBar mActionBar;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
         initWebView();
         mAdapter = new DataAdapter(getActivity());
         mListView.setAdapter(new DataAdapter(getActivity()));
+        
+        mActionBar = getActivity().getActionBar();
 
         return v;
     }
