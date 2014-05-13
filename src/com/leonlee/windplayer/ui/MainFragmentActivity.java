@@ -1,6 +1,5 @@
 package com.leonlee.windplayer.ui;
 
-import java.lang.reflect.Field;
 
 import io.vov.vitamio.LibsChecker;
 
@@ -214,9 +213,11 @@ public class MainFragmentActivity extends FragmentActivity{
 
                 @Override
                 public void onPageSelected(int position) {
-                    switch (position) {
+                    mDrawerList.setItemChecked(position, true);
+                    getActionBar().setTitle(mContentList[position]);
+                    /*switch (position) {
                     case 0:
-                        //mActionBar.setTitle(R.string.title_file);
+                        getActionBar().setTitle(mContentList[position]);
                         //mRadioFile.setChecked(true);
                         break;
                     case 1:
@@ -226,9 +227,8 @@ public class MainFragmentActivity extends FragmentActivity{
 
                     default:
                         break;
-                    }
+                    }*/
                 }
-	    
 	};
 
     //@Override
