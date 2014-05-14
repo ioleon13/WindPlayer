@@ -6,4 +6,16 @@
         <item>VOD</item>
         <item>Settings</item>
     </string-array>
+    
+    <string-array name="tv_category_img_list">
+        <item>@drawable/history</item>
+        <item>@drawable/star</item>
+        <item>@drawable/satellite_bak</item>
+    </string-array>
+    
+    <string-array name="tv_category_color_list">
+        <item>@color/blue_one</item>
+        <item>@color/orange_one</item>
+        <item>@color/red_one</item>
+    </string-array>
 </resources>
