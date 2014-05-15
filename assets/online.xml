@@ -667,6 +667,14 @@
 
   </body>
   <categories>
+        <category id="101" version="" name="最近观看">
+            
+        </category>
+        
+        <category id="102" version="" name="我的收藏">
+            
+        </category>
+        
         <category id="01" version="9" name="中央电视台" >
                 <item>001</item>
                 <item>002</item>

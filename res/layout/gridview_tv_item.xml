@@ -6,16 +6,17 @@
     android:gravity="center" >
     
     <ImageView android:id="@+id/tv_image_item"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center_vertical"
-        android:scaleType="centerInside"/>
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:scaleType="centerInside" />
     
     <TextView android:id="@+id/tv_title_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
 
 </LinearLayout>

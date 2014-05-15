@@ -8,14 +8,16 @@
     </string-array>
     
     <string-array name="tv_category_img_list">
-        <item>@drawable/history</item>
-        <item>@drawable/star</item>
+        <item>@drawable/history48</item>
+        <item>@drawable/star_bak1</item>
+        <item>@drawable/cctv</item>
         <item>@drawable/satellite_bak</item>
     </string-array>
     
     <string-array name="tv_category_color_list">
         <item>@color/blue_one</item>
         <item>@color/orange_one</item>
+        <item>@color/blue_two</item>
         <item>@color/red_one</item>
     </string-array>
 </resources>

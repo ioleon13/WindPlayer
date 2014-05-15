@@ -187,17 +187,22 @@ public class MainFragmentActivity extends FragmentActivity{
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return 2;
+			return 3;
 		}
 		
 		@Override
 		public Fragment getItem(int position) {
 			Fragment result = null;
 			switch (position) {
-			case 1:
+			case 2:
 				// online video
 				result = new FragmentOnline();
 				break;
+				
+			case 1:
+			    result = new FragmentTVLive();
+			    break;
+				
 			case 0:
 			default:
 				// local video

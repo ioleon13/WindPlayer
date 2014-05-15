@@ -60,7 +60,7 @@ public class NavigationAdapter extends ArrayAdapter<String> {
             break;
             
         case 3:
-            holder.image.setImageResource(R.drawable.drawer_setting);
+            holder.image.setImageResource(R.drawable.drawer_settings);
             break;
 
         default:

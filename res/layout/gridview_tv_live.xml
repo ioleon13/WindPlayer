@@ -3,12 +3,16 @@
     android:id="@+id/tv_gridview"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:columnWidth="90dp"
+    android:columnWidth="130dp"
     android:numColumns="auto_fit"
-    android:horizontalSpacing="10dp"
-    android:verticalSpacing="10dp"
+    android:horizontalSpacing="8dp"
+    android:verticalSpacing="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
     android:stretchMode="columnWidth"
-    android:gravity="center" >
+    android:gravity="center" 
+    android:scrollbars="none">
     
 
 </GridView>
