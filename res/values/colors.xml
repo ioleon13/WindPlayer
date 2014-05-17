@@ -22,4 +22,10 @@
     <color name="blue_three">#ff6699ff</color>
     <color name="blue_four">#ff3399cc</color>
     <color name="blue_five">#ff99cccc</color>
+    <color name="green_one">#ff339933</color>
+    <color name="green_two">#ff99cc33</color>
+    <color name="green_three">#ff009933</color>
+    <color name="green_four">#ff006633</color>
+    <color name="green_five">#ff336633</color>
+    <color name="green_six">#ff006600</color>
 </resources>

@@ -12,12 +12,18 @@
         <item>@drawable/star_bak1</item>
         <item>@drawable/cctv</item>
         <item>@drawable/satellite_bak</item>
+        <item>@drawable/phoenix</item>
+        <item>@drawable/cnninternational</item>
+        <item>@drawable/sports192</item>
     </string-array>
     
     <string-array name="tv_category_color_list">
         <item>@color/blue_one</item>
         <item>@color/orange_one</item>
         <item>@color/blue_two</item>
-        <item>@color/red_one</item>
+        <item>@color/red</item>
+        <item>@color/orange_two</item>
+        <item>@color/blue_five</item>
+        <item>@color/green_five</item>
     </string-array>
 </resources>

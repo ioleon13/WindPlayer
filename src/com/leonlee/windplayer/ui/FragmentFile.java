@@ -108,7 +108,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		forceShowOverflowMenu();
 		mActionBar = getActivity().getActionBar();
 		if (mActionBar != null) {
-		    mActionBar.setTitle(R.string.title_file);
+		    //mActionBar.setTitle(R.string.title_file);
 	        //mActionBar.setDisplayHomeAsUpEnabled(true);
 	        mActionBar.show();
 		}
