@@ -5,6 +5,7 @@ import com.leonlee.windplayer.R;
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
+import io.vov.vitamio.MediaPlayer.OnErrorListener;
 import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
@@ -31,7 +32,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class WindPlayerActivity extends Activity implements OnCompletionListener, OnInfoListener{
+public class WindPlayerActivity extends Activity
+    implements OnCompletionListener, OnInfoListener, OnErrorListener{
     private String TAG = "WindPlayerActivity";
 	private String path;
 	private String title;
@@ -249,7 +251,7 @@ public class WindPlayerActivity extends Activity implements OnCompletionListener
 
     @Override
     public void finish() {
-        Intent intent = new Intent(getApplicationContext(), FragmentOnline.class);
+        Intent intent = new Intent(getApplicationContext(), FragmentTVLive.class);
         intent.putExtra("Complete", true);
         Log.i(TAG, "set result: complete true");
         setResult(RESULT_OK, intent);
@@ -318,6 +320,16 @@ public class WindPlayerActivity extends Activity implements OnCompletionListener
             break;
         }
         return false;
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Intent intent = new Intent(getApplicationContext(), FragmentTVLive.class);
+        intent.putExtra("Complete", true);
+        Log.i(TAG, "set result: on error");
+        setResult(RESULT_OK, intent);
+        
+        return true;
     }
 
 }

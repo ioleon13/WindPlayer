@@ -42,4 +42,5 @@
     <string name="no">Cancel</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="title_tv">TV</string>
 </resources>

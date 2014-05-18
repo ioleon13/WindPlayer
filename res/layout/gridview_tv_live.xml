@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_gridview"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:columnWidth="130dp"
-    android:numColumns="auto_fit"
-    android:horizontalSpacing="8dp"
-    android:verticalSpacing="8dp"
-    android:paddingLeft="12dp"
-    android:paddingRight="12dp"
-    android:paddingTop="8dp"
-    android:stretchMode="columnWidth"
-    android:gravity="center" 
-    android:scrollbars="none">
-    
+    android:layout_height="fill_parent" >
 
-</GridView>
+    <GridView
+        android:id="@+id/tv_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="130dp"
+        android:gravity="center"
+        android:horizontalSpacing="8dp"
+        android:numColumns="auto_fit"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp" >
+    </GridView>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/ic_line"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:listSelector="#e8e8e8"
+        android:scrollbars="none"
+        android:visibility="gone" >
+    </ListView>
+
+</FrameLayout>
