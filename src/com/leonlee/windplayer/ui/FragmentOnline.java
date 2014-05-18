@@ -8,12 +8,14 @@ import com.leonlee.windplayer.util.FileUtils;
 import com.leonlee.windplayer.util.XmlReaderHelper;
 
 import android.R.animator;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+@SuppressLint("ValidFragment")
 public class FragmentOnline extends FragmentBase implements OnItemClickListener {
     private WebView mWebView;
     private ListView mListView;
@@ -55,6 +58,22 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
     
     //action bar
     private ActionBar mActionBar;
+    private ActionBarDrawerToggle mDrawerToggle;
+    
+    public void setDrawerToggle(ActionBarDrawerToggle toggle) {
+        mDrawerToggle = toggle;
+    }
+    
+    public FragmentOnline(ActionBarDrawerToggle mDrawerToggle) {
+        super();
+        this.mDrawerToggle = mDrawerToggle;
+    }
+
+    private void disableToggleIcon() {
+        if (mDrawerToggle != null) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+        }
+    }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -218,6 +237,10 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
             } else {            // vod
                 replaceArrayAdapter(videos);
             }
+            
+            //disable the toggle menu and show up caret
+            disableToggleIcon();
+            
             mListView.setAdapter(mAdapter);
             break;
             
@@ -226,6 +249,10 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
             Log.i(TAG, "level: 2 -> 3");
             if (item.id != null) { //live tv
                 replaceArrayAdapter(XmlReaderHelper.getVideoUrls(getActivity(), item.id));
+                
+                //disable the toggle menu and show up caret
+                disableToggleIcon();
+                
                 mListView.setAdapter(mAdapter);
             } else {
                 clearAndLoad(item.url);

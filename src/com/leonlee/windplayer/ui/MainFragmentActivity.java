@@ -45,6 +45,11 @@ public class MainFragmentActivity extends FragmentActivity{
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private NavigationAdapter mNavAdapter;
+	
+	//action menu
+	private Menu mActionMenu;
+	
+	private boolean mShowActionMenu = true;
 
 	@SuppressLint("NewApi")
     @Override
@@ -109,9 +114,9 @@ public class MainFragmentActivity extends FragmentActivity{
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 	    boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-	    menu.findItem(R.id.action_search).setVisible(!drawerOpen);
-	    menu.findItem(R.id.action_delete).setVisible(!drawerOpen);
-	    menu.findItem(R.id.action_camera).setVisible(!drawerOpen);
+	    
+	    boolean showMenu = (!drawerOpen) && mShowActionMenu;
+	    setActionMenuVisible(menu, showMenu);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -123,6 +128,15 @@ public class MainFragmentActivity extends FragmentActivity{
            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * set action menu visibility
+     */
+    private void setActionMenuVisible(Menu menu, boolean visible) {
+        menu.findItem(R.id.action_search).setVisible(visible);
+        menu.findItem(R.id.action_delete).setVisible(visible);
+        menu.findItem(R.id.action_camera).setVisible(visible);
     }
 
     /**
@@ -147,6 +161,8 @@ public class MainFragmentActivity extends FragmentActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_action_menu, menu);
+        
+        mActionMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
     
@@ -196,18 +212,20 @@ public class MainFragmentActivity extends FragmentActivity{
 			switch (position) {
 			case 2:
 				// online video
-				result = new FragmentOnline();
+				result = new FragmentOnline(mDrawerToggle);
 				break;
 				
 			case 1:
-			    result = new FragmentTVLive();
+			    result = new FragmentTVLive(mDrawerToggle);
 			    break;
 				
 			case 0:
-			default:
 				// local video
 				result = new FragmentFile();
 				break;
+				
+			default:
+                break;
 			}
 			return result;
 		}
@@ -220,6 +238,9 @@ public class MainFragmentActivity extends FragmentActivity{
                 public void onPageSelected(int position) {
                     mDrawerList.setItemChecked(position, true);
                     getActionBar().setTitle(mContentList[position]);
+                    
+                    mShowActionMenu = (position == 0);
+                    setActionMenuVisible(mActionMenu, mShowActionMenu);
                     /*switch (position) {
                     case 0:
                         getActionBar().setTitle(mContentList[position]);

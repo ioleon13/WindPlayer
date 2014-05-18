@@ -7,14 +7,17 @@ import com.leonlee.windplayer.adapter.TVListAdapter;
 import com.leonlee.windplayer.po.OnlineVideo;
 import com.leonlee.windplayer.util.XmlReaderHelper;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+@SuppressLint("ValidFragment")
 public class FragmentTVLive extends FragmentBase {
     private GridView mGridView;
     
@@ -26,6 +29,14 @@ public class FragmentTVLive extends FragmentBase {
     
     //action bar
     private ActionBar mActionBar;
+    private ActionBarDrawerToggle mDrawerToggle;
+    
+
+
+    public FragmentTVLive(ActionBarDrawerToggle mDrawerToggle) {
+        super();
+        this.mDrawerToggle = mDrawerToggle;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
