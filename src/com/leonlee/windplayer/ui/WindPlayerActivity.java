@@ -10,11 +10,14 @@ import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,12 +31,14 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WindPlayerActivity extends Activity
-    implements OnCompletionListener, OnInfoListener, OnErrorListener{
+    implements OnCompletionListener, OnInfoListener, OnErrorListener,
+    MediaController.OnHiddenListener{
     private String TAG = "WindPlayerActivity";
 	private String path;
 	private String title;
@@ -42,6 +47,8 @@ public class WindPlayerActivity extends Activity
 	private ImageView mOperationBg;
 	private ImageView mOperationPercent;
 	private AudioManager mAudioManager;
+	
+	private View mRootView;
 	
 	//the max volume
 	private int mMaxVolume;
@@ -63,11 +70,23 @@ public class WindPlayerActivity extends Activity
 	
 	//is streaming
 	private boolean mIsStreaming = false; 
+	
+	//action bar
+	private ActionBar mActionBar;
+	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void setSystemUiVisibility(View rootView) {
+	    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+	            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+	            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wind_player);
+		/*mRootView = findViewById(R.id.wind_player_root);
+		setSystemUiVisibility(mRootView);*/
 		
 		//path = getIntent().getStringExtra("path");
 		Intent intent = getIntent();
@@ -96,10 +115,25 @@ public class WindPlayerActivity extends Activity
 		mVideoView.setOnInfoListener(this);
 		
 		mMediaController = new MediaController(this);
+		mMediaController.setOnHiddenListener(this);
 		mVideoView.setMediaController(mMediaController);
 		mVideoView.requestFocus();
 		
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
+		
+		mActionBar = getActionBar();
+		if (mActionBar != null) {
+		    mActionBar.show();
+		} else {
+		    Log.e(TAG, "actionbar is null");
+		}
+		
+		//full screen display
+		Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
+        winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        win.setAttributes(winParams);
 	}
 
 	@Override
@@ -330,6 +364,12 @@ public class WindPlayerActivity extends Activity
         setResult(RESULT_OK, intent);
         
         return true;
+    }
+
+    @Override
+    public void onHidden() {
+        if (mActionBar != null)
+            mActionBar.hide();
     }
 
 }

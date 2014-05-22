@@ -37,8 +37,7 @@
         <activity
             android:name="com.leonlee.windplayer.ui.WindPlayerActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation" >
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|screenSize" >
         </activity>
         
         <!-- search suggestion provider -->
