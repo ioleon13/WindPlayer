@@ -37,8 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WindPlayerActivity extends Activity
-    implements OnCompletionListener, OnInfoListener, OnErrorListener,
-    MediaController.OnHiddenListener{
+    implements OnCompletionListener, OnInfoListener, OnErrorListener{
     private String TAG = "WindPlayerActivity";
 	private String path;
 	private String title;
@@ -47,8 +46,6 @@ public class WindPlayerActivity extends Activity
 	private ImageView mOperationBg;
 	private ImageView mOperationPercent;
 	private AudioManager mAudioManager;
-	
-	private View mRootView;
 	
 	//the max volume
 	private int mMaxVolume;
@@ -71,9 +68,6 @@ public class WindPlayerActivity extends Activity
 	//is streaming
 	private boolean mIsStreaming = false; 
 	
-	//action bar
-	private ActionBar mActionBar;
-	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSystemUiVisibility(View rootView) {
 	    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -85,8 +79,6 @@ public class WindPlayerActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wind_player);
-		/*mRootView = findViewById(R.id.wind_player_root);
-		setSystemUiVisibility(mRootView);*/
 		
 		//path = getIntent().getStringExtra("path");
 		Intent intent = getIntent();
@@ -115,25 +107,10 @@ public class WindPlayerActivity extends Activity
 		mVideoView.setOnInfoListener(this);
 		
 		mMediaController = new MediaController(this);
-		mMediaController.setOnHiddenListener(this);
 		mVideoView.setMediaController(mMediaController);
 		mVideoView.requestFocus();
 		
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
-		
-		mActionBar = getActionBar();
-		if (mActionBar != null) {
-		    mActionBar.show();
-		} else {
-		    Log.e(TAG, "actionbar is null");
-		}
-		
-		//full screen display
-		Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
-        winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        win.setAttributes(winParams);
 	}
 
 	@Override
@@ -365,11 +342,4 @@ public class WindPlayerActivity extends Activity
         
         return true;
     }
-
-    @Override
-    public void onHidden() {
-        if (mActionBar != null)
-            mActionBar.hide();
-    }
-
 }
