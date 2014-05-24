@@ -6,8 +6,8 @@
     android:gravity="center" >
     
     <ImageView android:id="@+id/tv_image_item"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
         android:layout_gravity="center"
         android:scaleType="centerInside" />
     

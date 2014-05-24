@@ -15,7 +15,11 @@
         <item>@drawable/phoenix</item>
         <item>@drawable/cnninternational</item>
         <item>@drawable/sports192</item>
-        <item>@drawable/cartoon</item>
+        <item>@drawable/cartoon144</item>
+        <item>@drawable/caijing</item>
+        <item>@drawable/news</item>
+        <item>@drawable/game</item>
+        <item>@drawable/difang</item>
     </string-array>
     
     <string-array name="tv_category_color_list">
@@ -26,5 +30,10 @@
         <item>@color/orange_two</item>
         <item>@color/blue_five</item>
         <item>@color/green_five</item>
+        <item>@color/blue</item>
+        <item>@color/red</item>
+        <item>@color/red_three</item>
+        <item>@color/orange_four</item>
+        <item>@color/blue_six</item>
     </string-array>
 </resources>
