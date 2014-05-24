@@ -46,6 +46,10 @@ public class FragmentTVLive extends FragmentBase implements OnItemClickListener 
     public static final String DISPLAY_NAME = "display_name";
     public static final String IS_STREAM = "is_stream";
     private final static int REQUEST_COMPLETE = 1;
+    
+    public FragmentTVLive() {
+        super();
+    }
 
     public FragmentTVLive(ActionBarDrawerToggle mDrawerToggle) {
         super();

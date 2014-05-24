@@ -675,7 +675,7 @@
             
         </category>
         
-        <category id="01" version="9" name="中央电视台" >
+        <category id="01" version="9" name="央视频道" >
                 <item>001</item>
                 <item>002</item>
                 <item>003</item>
@@ -697,7 +697,7 @@
                 <item>366</item>
                 <item>370</item>
         </category>
-        <category id="02" version="39" name="地方卫视" >
+        <category id="02" version="39" name="卫视频道" >
                 <item>018</item>
                 <item>027</item>
                 <item>036</item>
@@ -730,7 +730,7 @@
                 <item>174</item>
                 <item>286</item>
         </category>
-        <category id="03" version="36" name="港澳台电视台" >
+        <category id="03" version="36" name="港澳台频道" >
                 <item>016</item>
                 <item>017</item>
                 <item>068</item>
@@ -746,7 +746,7 @@
                 <item>231</item>
                 <item>294</item>
         </category>
-        <category id="04" version="31" name="国外电视台" >
+        <category id="04" version="31" name="国外频道" >
                 <item>203</item>
                 <item>204</item>
                 <item>208</item>
@@ -769,7 +769,22 @@
                 <item>277</item>
                 <item>369</item>
         </category>
-        <category id="06" version="18" name="湖南电视台" >
+        <category id="06" version="18" name="少儿卡通" >
+            
+        </category>
+        <category id="07" version="15" name="财经资讯" >
+            
+        </category>
+        <category id="08" version="6" name="新闻资讯" >
+            
+        </category>
+        <category id="09" version="8" name="游戏风云" >
+            
+        </category>
+        <category id="10" version="6" name="地方台" >
+            
+        </category>
+        <!-- <category id="06" version="18" name="湖南电视台" >
                 <item>018</item>
                 <item>022</item>
                 <item>112</item>
@@ -925,6 +940,6 @@
         <category id="23" version="2" name="其他电视台" >
                 <item>187</item>
                 <item>236</item>
-        </category>
+        </category> -->
   </categories>
 </list>

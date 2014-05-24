@@ -134,9 +134,11 @@ public class MainFragmentActivity extends FragmentActivity{
      * set action menu visibility
      */
     private void setActionMenuVisible(Menu menu, boolean visible) {
-        menu.findItem(R.id.action_search).setVisible(visible);
-        menu.findItem(R.id.action_delete).setVisible(visible);
-        menu.findItem(R.id.action_camera).setVisible(visible);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(visible);
+            menu.findItem(R.id.action_delete).setVisible(visible);
+            menu.findItem(R.id.action_camera).setVisible(visible);
+        }
     }
 
     /**

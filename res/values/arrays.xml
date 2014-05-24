@@ -15,6 +15,7 @@
         <item>@drawable/phoenix</item>
         <item>@drawable/cnninternational</item>
         <item>@drawable/sports192</item>
+        <item>@drawable/cartoon</item>
     </string-array>
     
     <string-array name="tv_category_color_list">

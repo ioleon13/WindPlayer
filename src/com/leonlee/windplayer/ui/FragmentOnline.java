@@ -64,6 +64,10 @@ public class FragmentOnline extends FragmentBase implements OnItemClickListener 
         mDrawerToggle = toggle;
     }
     
+    public FragmentOnline() {
+        super();
+    }
+    
     public FragmentOnline(ActionBarDrawerToggle mDrawerToggle) {
         super();
         this.mDrawerToggle = mDrawerToggle;
