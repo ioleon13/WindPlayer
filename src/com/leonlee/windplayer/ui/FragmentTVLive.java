@@ -11,6 +11,7 @@ import com.leonlee.windplayer.util.XmlReaderHelper;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -41,19 +42,24 @@ public class FragmentTVLive extends FragmentBase implements OnItemClickListener 
     private ActionBar mActionBar;
     private ActionBarDrawerToggle mDrawerToggle;
     
+    private String mCurTitle;
+    
     private int mLevel = 1;
     
     public static final String DISPLAY_NAME = "display_name";
     public static final String IS_STREAM = "is_stream";
     private final static int REQUEST_COMPLETE = 1;
     
+    private onCurrentTitleListener mCurrentTitleListener;
+    
     public FragmentTVLive() {
         super();
     }
 
-    public FragmentTVLive(ActionBarDrawerToggle mDrawerToggle) {
+    public FragmentTVLive(ActionBarDrawerToggle mDrawerToggle, onCurrentTitleListener l) {
         super();
         this.mDrawerToggle = mDrawerToggle;
+        mCurrentTitleListener = l;
     }
 
     @Override
@@ -74,6 +80,10 @@ public class FragmentTVLive extends FragmentBase implements OnItemClickListener 
         mActionBar = getActivity().getActionBar();
         return v;
     }
+    
+    public interface onCurrentTitleListener {
+        public void onCurrentTitle(String title);
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -88,8 +98,13 @@ public class FragmentTVLive extends FragmentBase implements OnItemClickListener 
             mChannelAdapter = new ChannelListAdapter(getActivity(),
                     R.layout.fragment_online_item,
                     XmlReaderHelper.getVideoUrls(getActivity(), itemCategory.id));
+       
+            mCurTitle = itemCategory.title;
+            //mActionBar.setTitle(mCurTitle);
+            if (mCurrentTitleListener != null) {
+                mCurrentTitleListener.onCurrentTitle(mCurTitle);
+            }
             
-            mActionBar.setTitle(itemCategory.title);
             setToggleIconEnabled(false);
             
             mListView.setAdapter(mChannelAdapter);
@@ -123,7 +138,13 @@ public class FragmentTVLive extends FragmentBase implements OnItemClickListener 
         case 2:
             mLevel = 1;
             Log.i(TAG, "onBackPressed 2 -> 1");
-            mActionBar.setTitle(R.string.title_tv);
+            mCurTitle = getResources().getString(R.string.title_tv);
+            //mActionBar.setTitle(R.string.title_tv);
+            if (mCurrentTitleListener != null) {
+                String strCurTitle = getResources().getString(R.string.title_tv);
+                mCurrentTitleListener.onCurrentTitle(strCurTitle);
+            }
+            
             setToggleIconEnabled(true);
             mListView.setVisibility(View.GONE);
             mGridView.setVisibility(View.VISIBLE);

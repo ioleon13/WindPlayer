@@ -32,5 +32,4 @@ public class FragmentBase extends Fragment {
 	public boolean onBackPressed() {
 	    return false;
 	}
-
 }

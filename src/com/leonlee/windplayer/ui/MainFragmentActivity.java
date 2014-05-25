@@ -5,6 +5,7 @@ import io.vov.vitamio.LibsChecker;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.adapter.NavigationAdapter;
+import com.leonlee.windplayer.ui.FragmentTVLive.onCurrentTitleListener;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -31,11 +32,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
-public class MainFragmentActivity extends FragmentActivity{
+public class MainFragmentActivity extends FragmentActivity implements onCurrentTitleListener{
 	private ViewPager mPager;
-	//private RadioButton mRadioFile;
-	//private RadioButton mRadioOnline;
-	//private ActionBar mActionBar;
 	
 	private String TAG = "MainFragmentActivity";
 	
@@ -50,6 +48,8 @@ public class MainFragmentActivity extends FragmentActivity{
 	private Menu mActionMenu;
 	
 	private boolean mShowActionMenu = true;
+	
+	private String mCurItemTitle = "";
 
 	@SuppressLint("NewApi")
     @Override
@@ -156,6 +156,12 @@ public class MainFragmentActivity extends FragmentActivity{
 	    
 	    mDrawerList.setItemChecked(position, true);
 	    mDrawerLayout.closeDrawer(mDrawerList);
+	    
+	    if (1 == position && !mCurItemTitle.isEmpty()) {
+	        getActionBar().setTitle(mCurItemTitle);
+	        return;
+	    }
+
 	    getActionBar().setTitle(mContentList[position]);
 	}
 
@@ -182,23 +188,11 @@ public class MainFragmentActivity extends FragmentActivity{
         
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+        
+        //set action bar title
+        if (!mCurItemTitle.isEmpty())
+            getActionBar().setTitle(mCurItemTitle);
     }
-
-    /**
-     * force show overflow menu
-     */
-    /*private void forceShowOverflowMenu() {
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);
-            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-            if (menuKeyField != null) {
-                menuKeyField.setAccessible(true);
-                menuKeyField.setBoolean(config, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private FragmentPagerAdapter mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 		
@@ -218,7 +212,7 @@ public class MainFragmentActivity extends FragmentActivity{
 				break;
 				
 			case 1:
-			    result = new FragmentTVLive(mDrawerToggle);
+			    result = new FragmentTVLive(mDrawerToggle, MainFragmentActivity.this);
 			    break;
 				
 			case 0:
@@ -239,43 +233,15 @@ public class MainFragmentActivity extends FragmentActivity{
                 @Override
                 public void onPageSelected(int position) {
                     mDrawerList.setItemChecked(position, true);
-                    getActionBar().setTitle(mContentList[position]);
+                    if (1 == position && !mCurItemTitle.isEmpty())
+                        getActionBar().setTitle(mCurItemTitle);
+                    else
+                        getActionBar().setTitle(mContentList[position]);
                     
                     mShowActionMenu = (position == 0);
                     setActionMenuVisible(mActionMenu, mShowActionMenu);
-                    /*switch (position) {
-                    case 0:
-                        getActionBar().setTitle(mContentList[position]);
-                        //mRadioFile.setChecked(true);
-                        break;
-                    case 1:
-                        //mActionBar.setTitle(R.string.title_online);
-                        //mRadioOnline.setChecked(true);
-                        break;
-
-                    default:
-                        break;
-                    }*/
                 }
 	};
-
-    //@Override
-    /*public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.radio_file:
-            //mActionBar.setTitle(R.string.title_file);
-            mPager.setCurrentItem(0);
-            break;
-            
-        case R.id.radio_online:
-            //mActionBar.setTitle(R.string.title_online);
-            mPager.setCurrentItem(1);
-            break;
-
-        default:
-            break;
-        }
-    }*/
 
     @Override
     public void onBackPressed() {
@@ -291,5 +257,11 @@ public class MainFragmentActivity extends FragmentActivity{
     private FragmentBase getFragmentByPosition(int position) {
         return (FragmentBase) getSupportFragmentManager().findFragmentByTag("android:switcher:"
                 + mPager.getId() + ":" + position);
+    }
+
+    @Override
+    public void onCurrentTitle(String title) {
+        mCurItemTitle = title;
+        getActionBar().setTitle(title);
     }
 }

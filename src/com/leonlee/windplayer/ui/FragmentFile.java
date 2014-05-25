@@ -26,6 +26,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
@@ -108,8 +109,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		forceShowOverflowMenu();
 		mActionBar = getActivity().getActionBar();
 		if (mActionBar != null) {
-		    //mActionBar.setTitle(R.string.title_file);
-	        //mActionBar.setDisplayHomeAsUpEnabled(true);
 	        mActionBar.show();
 		}
 		
@@ -122,10 +121,6 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		mSDCardAvailable = (TextView)v.findViewById(R.id.sd_block);
 		
 		//load the data
-		/*if (new SQLiteHelper(getActivity()).isEmpty())
-		    new ScanVideoTask().execute();
-		else
-		    new DataTask().execute();*/
 		new DataTask().execute();
 		
 		//start hiding handler
@@ -143,8 +138,8 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
         
 		return v;
 	}
-	
-	@Override
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.main_action_menu, menu);
         
