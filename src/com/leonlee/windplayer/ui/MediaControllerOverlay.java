@@ -7,6 +7,7 @@ import com.leonlee.windplayer.R;
 
 import android.content.Context;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -35,6 +36,8 @@ public class MediaControllerOverlay extends FrameLayout implements
     private static final String TAG = "MediaControllerOverlay";
     
     private Listener mListener;
+    
+    private View mRoot;
     
     //top controller view
     private TextView mMediaTitle, mCurrentTime, mSurplusPower;

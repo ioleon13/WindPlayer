@@ -31,4 +31,6 @@
     <color name="green_four">#ff006633</color>
     <color name="green_five">#ff336633</color>
     <color name="green_six">#ff006600</color>
+    
+    <color name="mediacontroller_bg">#99000000</color>
 </resources>
