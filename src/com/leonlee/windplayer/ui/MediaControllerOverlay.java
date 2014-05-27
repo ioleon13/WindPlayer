@@ -3,6 +3,8 @@
  */
 package com.leonlee.windplayer.ui;
 
+import com.leonlee.windplayer.R;
+
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -11,13 +13,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 
 /**
  * @author liya
  *
  */
 public class MediaControllerOverlay extends FrameLayout implements
-        ControllerOverlay, OnClickListener{
+        ControllerOverlay, OnClickListener, AnimationListener{
     
     protected enum State {
         PLAYING,
@@ -56,6 +61,7 @@ public class MediaControllerOverlay extends FrameLayout implements
     
     private final Handler handler;
     private final Runnable startHidingRunnable;
+    private final Animation hideAnimation;
 
     public MediaControllerOverlay(Context context) {
         super(context);
@@ -67,6 +73,9 @@ public class MediaControllerOverlay extends FrameLayout implements
                 
             }
         };
+        
+        hideAnimation = AnimationUtils.loadAnimation(context, R.anim.controller_fadout);
+        hideAnimation.setAnimationListener(this);
     }
 
     @Override
@@ -173,6 +182,24 @@ public class MediaControllerOverlay extends FrameLayout implements
 
     @Override
     public void onClick(View v) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onAnimationEnd(Animation arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onAnimationStart(Animation arg0) {
         // TODO Auto-generated method stub
         
     }
