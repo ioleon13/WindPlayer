@@ -9,18 +9,36 @@
         style="@style/MediaController_Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="5.0dip"
         android:layout_centerVertical="true"
         android:ellipsize="marquee"
         android:singleLine="true"/>
     
     <TextView 
-        android:id="@+id/controller_system_time"/>
+        android:id="@+id/controller_system_time"
+        style="@style/MediaController_Text"
+        android:layout_toLeftOf="@id/controller_surplus_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5.0dip"/>
     
     <TextView 
-        android:id="@+id/controller_surplus_power"/>
+        android:id="@+id/controller_surplus_power"
+        style="@style/MediaController_Text"
+        android:layout_toLeftOf="@id/controller_starred"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5.0dip"/>
     
     <ImageButton 
-        android:id="@+id/controller_starred"/>
+        android:id="@+id/controller_starred"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5.0dip"
+        android:src="@drawable/arrow_right"/>
 
 </RelativeLayout>
