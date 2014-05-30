@@ -42,4 +42,10 @@
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
     <string name="title_tv">电视直播</string>
+    <string name="controller_prev_video">播放上一个</string>
+    <string name="controller_next_video">播放下一个</string>
+    <string name="controller_rewind">快退</string>
+    <string name="controller_fastforward">快进</string>
+    <string name="controller_stop">停止</string>
+    <string name="controller_play_pause">"开始/暂停"</string>
 </resources>
