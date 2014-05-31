@@ -45,6 +45,8 @@ public interface ControllerOverlay {
 
     void showErrorMessage(String message);
     
+    void setTimes(long currentTime, long totalTime);
+    
     void setControlButtonEnable(boolean enable);
     void setControlButtonEnableForStop(boolean enable);
 
