@@ -21,7 +21,9 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5.0dip"
-        android:src="@drawable/ic_vidcontrol_star"/>
+        android:background="@drawable/mediacontroller_button"
+        android:src="@drawable/ic_vidcontrol_favorite"
+        android:contentDescription="@string/controller_favorite"/>
     
     <TextView 
         android:id="@+id/controller_surplus_power"

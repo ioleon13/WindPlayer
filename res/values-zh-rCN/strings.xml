@@ -48,4 +48,5 @@
     <string name="controller_fastforward">快进</string>
     <string name="controller_stop">停止</string>
     <string name="controller_play_pause">"开始/暂停"</string>
+    <string name="controller_favorite">收藏</string>
 </resources>
