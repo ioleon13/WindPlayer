@@ -9,12 +9,15 @@ import com.leonlee.windplayer.util.StringUtils;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -67,6 +70,9 @@ public class MediaControllerOverlay extends FrameLayout implements
     private boolean mIsLiveMode = false;
     private boolean mHidden = false;
     private boolean mCanReplay = true;
+    private boolean mDragging = false;
+    
+    private int mDuration = 0;
     
     private final Handler handler;
     private final Runnable startHidingRunnable;
@@ -100,6 +106,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         mCurrentTime = (TextView) mRoot.findViewById(R.id.controller_system_time);
         mSurplusPower = (TextView) mRoot.findViewById(R.id.controller_surplus_power);
         mFavoriteBtn = (ImageButton) mRoot.findViewById(R.id.controller_starred);
+        mFavoriteBtn.setOnClickListener(favoriteListener);
         
         //center views
         mLoadingView = mRoot.findViewById(R.id.controller_video_loading);
@@ -110,14 +117,24 @@ public class MediaControllerOverlay extends FrameLayout implements
         //bottom views
         mCurrentPosition = (TextView) mRoot.findViewById(R.id.controller_time_current);
         mProgress = (SeekBar) mRoot.findViewById(R.id.controller_seekbar);
+        mProgress.setOnSeekBarChangeListener(mSeekListener);
         mEndTime = (TextView) mRoot.findViewById(R.id.controller_time_total);
         
         //control buttons
         mPrevVideoView = (ImageButton) mRoot.findViewById(R.id.controller_prev_video);
+        mPrevVideoView.setOnClickListener(prevListener);
+        
         mRewButton = (ImageButton) mRoot.findViewById(R.id.controller_rewind);
+        mRewButton.setOnClickListener(rewindListener);
+        
         mStopButton = (ImageButton) mRoot.findViewById(R.id.controller_stop);
+        mStopButton.setOnClickListener(stopListener);
+        
         mFfwdButton = (ImageButton) mRoot.findViewById(R.id.controller_fastforward);
+        mFfwdButton.setOnClickListener(fastforwardListener);
+        
         mNextVideoView = (ImageButton) mRoot.findViewById(R.id.controller_next_video);
+        mNextVideoView.setOnClickListener(nextListener);
         
         hide();
     }
@@ -197,11 +214,12 @@ public class MediaControllerOverlay extends FrameLayout implements
     }
     
     @Override
-    public void setTimes(long currentTime, long totalTime) {
+    public void setTimes(int currentTime, int totalTime) {
+        mDuration = totalTime;
         if (mProgress != null) {
             if (totalTime > 0) {
-                long pos = 1000L * currentTime / totalTime;
-                mProgress.setProgress((int) pos);
+                int pos = 1000 * currentTime / totalTime;
+                mProgress.setProgress(pos);
             }
         }
         
@@ -216,56 +234,95 @@ public class MediaControllerOverlay extends FrameLayout implements
 
     @Override
     public void setControlButtonEnable(boolean enable) {
-        // TODO Auto-generated method stub
-        
+        mProgress.setEnabled(enable);
+        mPrevVideoView.setClickable(enable);
+        mRewButton.setClickable(enable);
+        mStopButton.setClickable(enable);
+        mFfwdButton.setClickable(enable);
+        mNextVideoView.setClickable(enable);
     }
 
     @Override
     public void setControlButtonEnableForStop(boolean enable) {
-        // TODO Auto-generated method stub
-        
+        mNextVideoView.setEnabled(enable);
+        mPrevVideoView.setEnabled(enable);
     }
 
     @Override
     public void clearPlayState() {
-        // TODO Auto-generated method stub
-        
+        mPlayPauseReplayView.setVisibility(View.INVISIBLE);
+        mLoadingView.setVisibility(View.INVISIBLE);
+        show();
     }
 
     @Override
     public void showFfwdButton(boolean show) {
-        // TODO Auto-generated method stub
-        
+        if (!show) {
+            mFfwdButton.setImageResource(R.drawable.ic_vidcontrol_ffwd_false);
+            mFfwdButton.setClickable(false);
+        } else {
+            mFfwdButton.setImageResource(R.drawable.ic_vidcontrol_ffwd);
+            mFfwdButton.setClickable(true);
+        }
     }
 
     @Override
     public void showRewButton(boolean show) {
-        // TODO Auto-generated method stub
-        
+        if (!show) {
+            mRewButton.setImageResource(R.drawable.ic_vidcontrol_rew_false);
+            mRewButton.setClickable(false);
+        } else {
+            mRewButton.setImageResource(R.drawable.ic_vidcontrol_rew);
+            mRewButton.setClickable(true);
+        }
+    }
+    
+    public void showStopButton(boolean show) {
+        if (!show) {
+            mStopButton.setImageResource(R.drawable.ic_vidcontrol_stop_unable);
+            mStopButton.setClickable(false);
+        } else {
+            mStopButton.setImageResource(R.drawable.ic_vidcontrol_stop);
+            mStopButton.setClickable(true);
+        }
     }
 
     @Override
     public void setStopButton(boolean enable) {
-        // TODO Auto-generated method stub
-        
+        mStopButton.setEnabled(enable);
     }
 
     @Override
     public void timeBarEnable(boolean enable) {
-        // TODO Auto-generated method stub
-        
+        mProgress.setEnabled(enable);
     }
 
     @Override
     public void setLiveMode() {
-        // TODO Auto-generated method stub
-        
+        mRewButton.setImageResource(R.drawable.ic_vidcontrol_rew_false);
+        mRewButton.setClickable(false);
+        mFfwdButton.setImageResource(R.drawable.ic_vidcontrol_ffwd_false);
+        mFfwdButton.setClickable(false);
+        mProgress.setEnabled(false);
+        mIsLiveMode = true;
+    }
+    
+    public void resetTime() {
+        setTimes(0, 0);
     }
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
-        
+        if (mListener != null) {
+            if (v == mPlayPauseReplayView) {
+                if (mState == State.ENDED) {
+                    if (mCanReplay)
+                        mListener.onReplay();
+                } else if (mState == State.PLAYING || mState == State.PAUSED) {
+                    mListener.onPlayPause();
+                }
+            }
+        }
     }
 
     @Override
@@ -285,6 +342,48 @@ public class MediaControllerOverlay extends FrameLayout implements
         
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mHidden) {
+            show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (super.onTouchEvent(event))
+            return true;
+        
+        if (mHidden) {
+            show();
+            return true;
+        }
+        
+        switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            cancelHiding();
+            if (mState == State.PAUSED || mState == State.PLAYING) {
+                if (mListener != null)
+                    mListener.onPlayPause();
+            }
+            break;
+            
+        case MotionEvent.ACTION_UP:
+            maybeStartHiding();
+            break;
+
+        default:
+            break;
+        }
+        
+        return true;
+    }
+    
+    public void hideToShow() {
+        maybeStartHiding();
+    }
+
     public void hide() {
         boolean wasHidden = mHidden;
         mHidden = true;
@@ -298,6 +397,14 @@ public class MediaControllerOverlay extends FrameLayout implements
         if (mListener != null && wasHidden != mHidden) {
             mListener.onHidden();
         }
+    }
+    
+    public void showLoadingView(boolean show) {
+        mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+    
+    public void setLoadingText(String text) {
+        mLoadingText.setText(text);
     }
     
     private void showCenterView(View view) {
@@ -351,4 +458,87 @@ public class MediaControllerOverlay extends FrameLayout implements
             mRoot.setAnimation(hideAnimation);
         }
     }
+    
+    //button click listener
+    private View.OnClickListener prevListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onPrev();
+        }
+    };
+    
+    private View.OnClickListener rewindListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onRew();
+        }
+    };
+    
+    private View.OnClickListener stopListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onStopVideo();
+        }
+    };
+    
+    private View.OnClickListener fastforwardListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onFfwd();
+        }
+    };
+    
+    private View.OnClickListener nextListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onNext();
+        }
+    };
+    
+    private View.OnClickListener favoriteListener = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            mListener.onFavoriteVideo();
+        }
+    };
+    
+    //seekbar change listener
+    private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+        
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            maybeStartHiding();
+            int endPosition = (mDuration * seekBar.getProgress()) / 1000;
+            
+            if (mListener != null)
+                mListener.onSeekEnd(endPosition);
+        }
+        
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            cancelHiding();
+            mDragging = true;
+            if (mListener != null)
+                mListener.onSeekStart();
+        }
+        
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                boolean fromUser) {
+            if (!fromUser)
+                return;
+            cancelHiding();
+            
+            int newPosition = (mDuration * progress) / 1000;
+            
+            if (mListener != null)
+                mListener.onSeekMove(newPosition);
+        }
+    };
 }

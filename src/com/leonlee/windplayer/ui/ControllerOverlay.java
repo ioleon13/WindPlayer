@@ -22,6 +22,12 @@ public interface ControllerOverlay {
         void onPrev();
         void onFfwd();
         void onRew();
+        
+        void onFavoriteVideo();
+        
+        void onSeekStart();
+        void onSeekMove(int time);
+        void onSeekEnd(int time);
     }
     
     void setListener(Listener l);
@@ -45,7 +51,7 @@ public interface ControllerOverlay {
 
     void showErrorMessage(String message);
     
-    void setTimes(long currentTime, long totalTime);
+    void setTimes(int currentTime, int totalTime);
     
     void setControlButtonEnable(boolean enable);
     void setControlButtonEnableForStop(boolean enable);
