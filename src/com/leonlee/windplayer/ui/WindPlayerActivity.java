@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -37,7 +38,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WindPlayerActivity extends Activity
-    implements OnCompletionListener, OnInfoListener, OnErrorListener{
+    implements OnCompletionListener, OnInfoListener, OnErrorListener,
+    ControllerOverlay.Listener{
     private String TAG = "WindPlayerActivity";
 	private String path;
 	private String title;
@@ -65,8 +67,13 @@ public class WindPlayerActivity extends Activity
 	private View mLoadingView;
 	private TextView mLoadingText;
 	
+	private View mRootView;
+	private MediaControllerOverlay mController;
+	
 	//is streaming
 	private boolean mIsStreaming = false; 
+	
+	private boolean mFinishOnComplete = true;
 	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSystemUiVisibility(View rootView) {
@@ -79,6 +86,7 @@ public class WindPlayerActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wind_player);
+		mRootView = findViewById(R.id.wind_player_root);
 		
 		//path = getIntent().getStringExtra("path");
 		Intent intent = getIntent();
@@ -86,6 +94,7 @@ public class WindPlayerActivity extends Activity
 		    path = intent.getData().toString();
 		    title = intent.getStringExtra(FragmentOnline.DISPLAY_NAME);
 		    mIsStreaming = intent.getBooleanExtra(FragmentOnline.IS_STREAM, false);
+		    mFinishOnComplete = intent.getBooleanExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
 		}
 		
 		if (TextUtils.isEmpty(path))
@@ -106,9 +115,11 @@ public class WindPlayerActivity extends Activity
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnInfoListener(this);
 		
-		mMediaController = new MediaController(this);
-		mVideoView.setMediaController(mMediaController);
-		mVideoView.requestFocus();
+		//media controller overlay
+		mController = new MediaControllerOverlay(getApplicationContext());
+		((ViewGroup)mRootView).addView(mController.getView());
+		mController.setListener(this);
+		mController.setCanReplay(!mFinishOnComplete);
 		
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
 	}
@@ -341,5 +352,83 @@ public class WindPlayerActivity extends Activity
         setResult(RESULT_OK, intent);
         
         return true;
+    }
+
+    @Override
+    public void onPlayPause() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onShown() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onHidden() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onReplay() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onStopVideo() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onNext() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onPrev() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onFfwd() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onRew() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onFavoriteVideo() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onSeekStart() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onSeekMove(int time) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onSeekEnd(int time) {
+        // TODO Auto-generated method stub
+        
     }
 }
