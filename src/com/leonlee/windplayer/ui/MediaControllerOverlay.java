@@ -286,6 +286,16 @@ public class MediaControllerOverlay extends FrameLayout implements
             mStopButton.setClickable(true);
         }
     }
+    
+    public void showNextPrevBtn(boolean show) {
+        if (!show) {
+            mNextVideoView.setVisibility(View.GONE);
+            mPrevVideoView.setVisibility(View.GONE);
+        } else {
+            mNextVideoView.setVisibility(View.VISIBLE);
+            mNextVideoView.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void setStopButton(boolean enable) {
@@ -441,8 +451,10 @@ public class MediaControllerOverlay extends FrameLayout implements
     }
     
     private void maybeStartHiding() {
+        Log.e(TAG, "maybeStartHiding");
         cancelHiding();
         
+        Log.e(TAG, "start hiding after 2.5s, mState=" + mState);
         if (mState == State.PLAYING) {
             handler.postDelayed(startHidingRunnable, 2500);
         }
@@ -454,8 +466,13 @@ public class MediaControllerOverlay extends FrameLayout implements
     }
     
     private void startHiding() {
-        if (mRoot.getVisibility() == View.VISIBLE) {
-            mRoot.setAnimation(hideAnimation);
+        startHideAnimation(mCenterView);
+        startHideAnimation(mProgress);
+    }
+    
+    private void startHideAnimation(View view) {
+        if (view.getVisibility() == View.VISIBLE) {
+            view.startAnimation(hideAnimation);
         }
     }
     

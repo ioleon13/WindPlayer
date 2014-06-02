@@ -1,6 +1,9 @@
 package com.leonlee.windplayer.ui;
 
+import java.util.ArrayList;
+
 import com.leonlee.windplayer.R;
+import com.leonlee.windplayer.po.PFile;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -75,6 +78,11 @@ public class WindPlayerActivity extends Activity
 	
 	private boolean mFinishOnComplete = true;
 	
+	private int mLastSystemUiVis = 0;
+	
+	//play list
+	private ArrayList<PFile> mPlaylist;
+	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSystemUiVisibility(View rootView) {
 	    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -121,7 +129,41 @@ public class WindPlayerActivity extends Activity
 		mController.setListener(this);
 		mController.setCanReplay(!mFinishOnComplete);
 		
+		mPlaylist = FragmentFile.getFileArray();
+		if (mPlaylist == null || mPlaylist.size() == 1) {
+		    mController.showNextPrevBtn(false);
+		} else {
+		    mController.showNextPrevBtn(true);
+		}
+		
+		mVideoView.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                mController.show();
+                return false;
+            }
+        });
+		
+		setOnSystemUiVisibilityChangeListener();
+		
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
+	}
+	
+	private void setOnSystemUiVisibilityChangeListener() {
+	    mVideoView.setOnSystemUiVisibilityChangeListener(
+	            new View.OnSystemUiVisibilityChangeListener() {
+                    
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        int diff = mLastSystemUiVis ^ visibility;
+                        mLastSystemUiVis = visibility;
+                        if ((diff & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0
+                                && (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+                            mController.show();
+                        }
+                    }
+                });
 	}
 
 	@Override
@@ -289,6 +331,9 @@ public class WindPlayerActivity extends Activity
         if (mVideoView != null) {
             mVideoView.start();
         }
+        
+        if (mController != null)
+            mController.showPlaying();
     }
     
     private void stopPlayer() {
