@@ -1,6 +1,7 @@
 package com.leonlee.windplayer.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
@@ -13,6 +14,7 @@ import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -83,6 +85,18 @@ public class WindPlayerActivity extends Activity
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
+	//handler and runable
+	private Handler mHandler = new Handler();
+	
+	private final Runnable mProgressChecker = new Runnable() {
+        
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            
+        }
+    };
+	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSystemUiVisibility(View rootView) {
 	    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -108,6 +122,11 @@ public class WindPlayerActivity extends Activity
 		if (TextUtils.isEmpty(path))
 			path = Environment.getExternalStorageDirectory() + "DCIM/Camera/MOV041.mp4";
 		
+		if (TextUtils.isEmpty(title)) {
+		    List<String> paths = Uri.parse(path).getPathSegments();
+	        title = paths == null || paths.isEmpty() ? "null" : paths.get(paths.size() - 1);
+		}
+		
 		mVideoView = (VideoView)findViewById(R.id.surface_view);
 		mVolumeBrightnessLayout = findViewById(R.id.volume_operation_brightness);
 		mOperationBg = (ImageView)findViewById(R.id.operation_bg);
@@ -128,6 +147,7 @@ public class WindPlayerActivity extends Activity
 		((ViewGroup)mRootView).addView(mController.getView());
 		mController.setListener(this);
 		mController.setCanReplay(!mFinishOnComplete);
+		mController.setMediaTitle(title);
 		
 		mPlaylist = FragmentFile.getFileArray();
 		if (mPlaylist == null || mPlaylist.size() == 1) {

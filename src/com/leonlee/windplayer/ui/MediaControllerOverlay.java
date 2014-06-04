@@ -296,6 +296,17 @@ public class MediaControllerOverlay extends FrameLayout implements
             mNextVideoView.setVisibility(View.VISIBLE);
         }
     }
+    
+    public void setMediaTitle(String title) {
+        if (mMediaTitle != null)
+            mMediaTitle.setText(title);
+        
+        if (mSurplusPower != null)
+            mSurplusPower.setText("98%");
+        
+        if (mCurrentTime != null)
+            mCurrentTime.setText("18:00");
+    }
 
     @Override
     public void setStopButton(boolean enable) {
