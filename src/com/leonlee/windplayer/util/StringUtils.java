@@ -1,5 +1,6 @@
 package com.leonlee.windplayer.util;
 
+import android.annotation.SuppressLint;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,11 +8,13 @@ import java.util.Date;
 public class StringUtils {
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd";
     private static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd hh:mm:ss";
+    private static final String DEFAULT_TIME_PATTERN = "kk:mm";
     public final static String EMPTY = "";
     
     /**
      * format date string
      */
+    @SuppressLint("SimpleDateFormat")
     public static String formateDate(Date date, String pattern) {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         return format.format(date);
@@ -29,6 +32,13 @@ public class StringUtils {
      */
     public static String getDateTime() {
         return formateDate(new Date(), DEFAULT_DATETIME_PATTERN);
+    }
+    
+    /**
+     * get current time string
+     */
+    public static String getCurrentTimeString() {
+        return formateDate(new Date(), DEFAULT_TIME_PATTERN);
     }
     
     /**

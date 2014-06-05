@@ -300,13 +300,18 @@ public class MediaControllerOverlay extends FrameLayout implements
     public void setMediaTitle(String title) {
         if (mMediaTitle != null)
             mMediaTitle.setText(title);
-        
-        if (mSurplusPower != null)
-            mSurplusPower.setText("98%");
-        
-        if (mCurrentTime != null)
-            mCurrentTime.setText("18:00");
     }
+    
+    public void setCurrentTime(String time) {
+        if (mCurrentTime != null)
+            mCurrentTime.setText(time);
+    }
+    
+    public void setSurplusPower(String power) {
+        if (mSurplusPower != null)
+            mSurplusPower.setText(power);
+    }
+    
 
     @Override
     public void setStopButton(boolean enable) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.leonlee.windplayer.R;
 import com.leonlee.windplayer.po.PFile;
+import com.leonlee.windplayer.util.StringUtils;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -25,8 +26,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Log;
@@ -82,6 +85,14 @@ public class WindPlayerActivity extends Activity
 	
 	private int mLastSystemUiVis = 0;
 	
+	//seek bar was dragging
+	private boolean mDragging = false;
+	
+	//seek bar was showing
+	private boolean mShowing = false;
+	
+	private int mVideoPosition = 0;
+	
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
@@ -92,8 +103,9 @@ public class WindPlayerActivity extends Activity
         
         @Override
         public void run() {
-            // TODO Auto-generated method stub
-            
+            int pos = setProgress();
+            setCurrentTime();
+            mHandler.postDelayed(mProgressChecker, 1000 - (pos % 1000));
         }
     };
 	
@@ -164,6 +176,9 @@ public class WindPlayerActivity extends Activity
                 return false;
             }
         });
+		
+		//register battery changed broadcast receiver
+		registerReceiver(batteryChangedRecv, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 		
 		setOnSystemUiVisibilityChangeListener();
 		
@@ -354,6 +369,8 @@ public class WindPlayerActivity extends Activity
         
         if (mController != null)
             mController.showPlaying();
+        
+        mHandler.post(mProgressChecker);
     }
     
     private void stopPlayer() {
@@ -370,6 +387,45 @@ public class WindPlayerActivity extends Activity
                 mMediaController.setFileName(title);
         }
     }
+    
+    //set seekbar time value
+    private int setProgress() {
+        if (mDragging || !mShowing || mVideoView == null)
+            return 0;
+        
+        long pos = 0;
+        
+        if (mVideoView.isPlaying()) {
+            pos = mVideoView.getCurrentPosition();
+        }
+        
+        long duration = mVideoView.getDuration();
+        
+        mController.setTimes((int)pos, (int)duration);
+        mVideoPosition = (int)pos;
+        
+        return (int)pos;
+    }
+    
+    //set current time
+    private void setCurrentTime() {
+        mController.setCurrentTime(StringUtils.getCurrentTimeString());
+    }
+    
+    //receive battery changed broadcast
+    private BroadcastReceiver batteryChangedRecv = new BroadcastReceiver() {
+        
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
+                int level = intent.getIntExtra("level", 0);
+                int scale = intent.getIntExtra("scale", 100);
+                
+                if (mController != null)
+                    mController.setSurplusPower((level * 100 / scale) + "%");
+            }
+        }
+    };
     
     //is need resume
     private boolean needResume = true;
@@ -427,14 +483,14 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onShown() {
-        // TODO Auto-generated method stub
+        mShowing = true;
+        setProgress();
         
     }
 
     @Override
     public void onHidden() {
-        // TODO Auto-generated method stub
-        
+        mShowing = false;
     }
 
     @Override
@@ -481,8 +537,7 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onSeekStart() {
-        // TODO Auto-generated method stub
-        
+        mDragging = true;
     }
 
     @Override
@@ -493,7 +548,6 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onSeekEnd(int time) {
-        // TODO Auto-generated method stub
-        
+        mDragging = false;
     }
 }
