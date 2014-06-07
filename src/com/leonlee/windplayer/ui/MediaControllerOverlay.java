@@ -228,7 +228,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         }
         
         if (mEndTime != null) {
-            mEndTime.setText(StringUtils.generateTime(currentTime));
+            mEndTime.setText(StringUtils.generateTime(totalTime));
         }
     }
 
