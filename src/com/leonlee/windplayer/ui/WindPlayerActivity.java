@@ -185,7 +185,13 @@ public class WindPlayerActivity extends Activity
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
 	}
 	
-	private void setOnSystemUiVisibilityChangeListener() {
+	@Override
+    protected void onDestroy() {
+        unregisterReceiver(batteryChangedRecv);
+        super.onDestroy();
+    }
+
+    private void setOnSystemUiVisibilityChangeListener() {
 	    mVideoView.setOnSystemUiVisibilityChangeListener(
 	            new View.OnSystemUiVisibilityChangeListener() {
                     
