@@ -93,6 +93,13 @@ public class WindPlayerActivity extends Activity
 	
 	private int mVideoPosition = 0;
 	
+	private long mClickTime = 0;
+	
+	private boolean mIsLiveStream = false;
+	private boolean mIsControlPaused = false;
+	private boolean mIsStop = false;
+	private boolean mHasPaused = false;
+	
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
@@ -464,6 +471,10 @@ public class WindPlayerActivity extends Activity
             String stringRate = getString(R.string.video_download_rate, extra);
             mLoadingText.setText(getString(R.string.video_layout_loading) + " " + stringRate);
             break;
+            
+        case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+            mIsStreaming = true;
+            break;
 
         default:
             break;
@@ -483,8 +494,26 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onPlayPause() {
-        // TODO Auto-generated method stub
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mClickTime < 700) return;
+        mClickTime = currentTime;
         
+        if (mVideoView != null) {
+            if (mVideoView.isPlaying()) {
+                if (mIsLiveStream) {
+                    mIsStop = true;
+                    mVideoView.setVisibility(View.INVISIBLE);
+                    mVideoPosition = 0;
+                    mController.resetTime();
+                } else {
+                    pauseVideo();
+                    mHasPaused = true;
+                }
+            } else {
+                playVideo();
+                mHasPaused = false;
+            }
+        }
     }
 
     @Override
@@ -555,5 +584,53 @@ public class WindPlayerActivity extends Activity
     @Override
     public void onSeekEnd(int time) {
         mDragging = false;
+    }
+    
+    private void pauseVideo() {
+        if (!mIsStreaming) {
+            mIsControlPaused = true;
+            
+            if (mVideoView.isPlaying())
+                mVideoPosition = (int) mVideoView.getCurrentPosition();
+            
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler.removeCallbacks(mProgressChecker);
+            mVideoView.pause();
+        }
+        
+        showControllerPaused();
+    }
+    
+    private void showControllerPaused() {
+        if (!mIsLiveStream) {
+            mController.showPaused();
+        } else {
+            mController.clearPlayState();
+        }
+    }
+    
+    private void EnableControllButton() {
+        if (mIsStop) {
+            mController.setControlButtonEnable(false);
+            mController.setControlButtonEnableForStop(true);
+        } else {
+            mController.setControlButtonEnable(true);
+            mController.setControlButtonEnableForStop(true);
+        }
+        
+        if (mIsLiveStream)
+            mController.setLiveMode();
+    }
+    
+    private void playVideo() {
+        mIsControlPaused = false;
+        mVideoView.start();
+        mController.showPlaying();
+        mController.showStopButton(true);
+
+        mIsStop = false;
+        mVideoView.setVisibility(View.VISIBLE);
+        EnableControllButton();
+        mHandler.post(mProgressChecker);
     }
 }

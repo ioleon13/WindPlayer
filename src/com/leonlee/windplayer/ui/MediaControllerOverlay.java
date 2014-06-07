@@ -113,6 +113,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         mLoadingText = (TextView) mRoot.findViewById(R.id.video_loading_text);
         mErrorView = (TextView) mRoot.findViewById(R.id.controller_error_text);
         mPlayPauseReplayView = (ImageButton) mRoot.findViewById(R.id.mediacontroller_play_pause);
+        mPlayPauseReplayView.setOnClickListener(this);
         
         //bottom views
         mCurrentPosition = (TextView) mRoot.findViewById(R.id.controller_time_current);
@@ -339,8 +340,10 @@ public class MediaControllerOverlay extends FrameLayout implements
 
     @Override
     public void onClick(View v) {
+        Log.e(TAG, "onClick");
         if (mListener != null) {
             if (v == mPlayPauseReplayView) {
+                Log.e(TAG, "click play pause button, state:" + mState);
                 if (mState == State.ENDED) {
                     if (mCanReplay)
                         mListener.onReplay();
@@ -348,6 +351,8 @@ public class MediaControllerOverlay extends FrameLayout implements
                     mListener.onPlayPause();
                 }
             }
+        } else {
+            Log.e(TAG, "mListener is null");
         }
     }
 
