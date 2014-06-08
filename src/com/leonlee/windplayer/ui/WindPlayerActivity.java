@@ -12,6 +12,7 @@ import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnErrorListener;
 import io.vov.vitamio.MediaPlayer.OnInfoListener;
+import io.vov.vitamio.MediaPlayer.OnSeekCompleteListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import android.media.AudioManager;
@@ -47,7 +48,7 @@ import android.widget.TextView;
 
 public class WindPlayerActivity extends Activity
     implements OnCompletionListener, OnInfoListener, OnErrorListener,
-    ControllerOverlay.Listener{
+    ControllerOverlay.Listener, OnSeekCompleteListener{
     private String TAG = "WindPlayerActivity";
 	private String path;
 	private String title;
@@ -92,6 +93,9 @@ public class WindPlayerActivity extends Activity
 	private boolean mShowing = false;
 	
 	private int mVideoPosition = 0;
+	private int mBeforeSeekPosition = 0;
+	
+	private int mDuration = 0;
 	
 	private long mClickTime = 0;
 	
@@ -103,6 +107,14 @@ public class WindPlayerActivity extends Activity
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
+	private enum SeekState {
+	    SEEKFORWARD,
+	    NOSEEK,
+	    SEEKBACK
+	}
+	
+	private SeekState mSeekState = SeekState.SEEKFORWARD;
+	
 	//handler and runable
 	private Handler mHandler = new Handler();
 	
@@ -113,6 +125,31 @@ public class WindPlayerActivity extends Activity
             int pos = setProgress();
             setCurrentTime();
             mHandler.postDelayed(mProgressChecker, 1000 - (pos % 1000));
+        }
+    };
+    
+    private final Runnable mPlayingChecker = new Runnable() {
+        
+        @Override
+        public void run() {
+            if (mVideoView != null && mVideoView.isPlaying()) {
+                if (mIsLiveStream) {
+                    mController.setLiveMode();
+                }
+                
+                mController.showPlaying();
+                mController.clearPlayState();
+            } else if (mHasPaused) {
+                if (mIsLiveStream) {
+                    mController.setLiveMode();
+                    mController.clearPlayState();
+                }
+                
+                mController.showPaused();
+            } else {
+                mController.showLoading();
+                mHandler.postDelayed(mPlayingChecker, 250);
+            }
         }
     };
 	
@@ -410,9 +447,42 @@ public class WindPlayerActivity extends Activity
         
         if (mVideoView.isPlaying()) {
             pos = mVideoView.getCurrentPosition();
+        } else {
+            pos = mVideoPosition;
         }
         
         long duration = mVideoView.getDuration();
+        mDuration = (int)duration;
+        
+        if (mIsControlPaused) {
+            pos = mVideoPosition;
+        } else {
+            if (!mIsLiveStream) {
+                if (mIsStreaming) {
+                    switch (mSeekState) {
+                    case SEEKFORWARD:
+                        if (pos < mVideoPosition)
+                            pos = mVideoPosition;
+                        break;
+                        
+                    case SEEKBACK:
+                        if (mVideoView.isPlaying() && pos < mBeforeSeekPosition) {
+                            mSeekState = SeekState.NOSEEK;
+                        }
+                        
+                        if (pos > mVideoPosition)
+                            pos = mVideoPosition;
+                        break;
+
+                    default:
+                        break;
+                    }
+                } else {
+                    if (mVideoPosition > 0  && pos == 0)
+                        pos = mVideoPosition;
+                }
+            }
+        }
         
         mController.setTimes((int)pos, (int)duration);
         mVideoPosition = (int)pos;
@@ -473,7 +543,7 @@ public class WindPlayerActivity extends Activity
             break;
             
         case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-            mIsStreaming = true;
+            mIsLiveStream = true;
             break;
 
         default:
@@ -577,17 +647,21 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onSeekMove(int time) {
-        // TODO Auto-generated method stub
-        
+        if (mController != null) {
+            mController.setTimes(time, mDuration);
+        }
     }
 
     @Override
     public void onSeekEnd(int time) {
         mDragging = false;
+        mBeforeSeekPosition = mVideoPosition;
+        mVideoPosition = time;
+        seek(time);
     }
     
     private void pauseVideo() {
-        if (!mIsStreaming) {
+        if (!mIsLiveStream) {
             mIsControlPaused = true;
             
             if (mVideoView.isPlaying())
@@ -632,5 +706,41 @@ public class WindPlayerActivity extends Activity
         mVideoView.setVisibility(View.VISIBLE);
         EnableControllButton();
         mHandler.post(mProgressChecker);
+    }
+    
+    private void seek(int time) {
+        if (mVideoView != null) {
+            if ((int)mVideoView.getCurrentPosition() > time) {
+                mSeekState = SeekState.SEEKBACK;
+            } else if ((int)mVideoView.getCurrentPosition() < time) {
+                mSeekState = SeekState.SEEKFORWARD;
+            } else {
+                mSeekState = SeekState.NOSEEK;
+            }
+            
+            mVideoPosition = time;
+            mVideoView.seekTo((long) time);
+            
+            if (mIsStreaming) {
+                mController.showLoading();
+                mHandler.removeCallbacks(mPlayingChecker);
+                mHandler.postDelayed(mPlayingChecker, 250);
+            }
+            
+            //setProgress();
+        }
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+        if (mIsControlPaused) {
+            if (!mIsLiveStream)
+                mController.showPaused();
+            else
+                mController.clearPlayState();
+        } else {
+            mController.showPlaying();
+            mController.clearPlayState();
+        }
     }
 }
