@@ -606,8 +606,24 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onStopVideo() {
-        // TODO Auto-generated method stub
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mClickTime < 700) return;
+        mClickTime = currentTime;
         
+        if (mIsStop)
+            return;
+        
+        mController.timeBarEnable(false);
+        mController.showFfwdButton(false);
+        mController.showRewButton(false);
+        mController.showStopButton(false);
+        stopPlaybackInRunnable();
+        
+        if (mVideoView != null)
+            mVideoView.setVisibility(View.INVISIBLE);
+        mVideoPosition = 0;
+        setProgress();
+        mIsStop = true;
     }
 
     @Override
@@ -618,20 +634,32 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onPrev() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void onFfwd() {
-        // TODO Auto-generated method stub
+        int pos = (int)mVideoView.getCurrentPosition();
+        pos += 15000;
+        if (pos > mDuration)
+            pos = mDuration;
         
+        Log.d(TAG, "onFfwd pos=" + pos);
+        seek(pos);
+        setProgress();
     }
 
     @Override
     public void onRew() {
-        // TODO Auto-generated method stub
+        int pos = (int)mVideoView.getCurrentPosition();
+        mBeforeSeekPosition = pos;
+        pos -= 15000;
+        if (pos <= 0)
+            pos = 1;
         
+        Log.d(TAG, "onPrev pos=" + pos);
+        seek(pos);
+        setProgress();
     }
 
     @Override
@@ -729,6 +757,23 @@ public class WindPlayerActivity extends Activity
             
             //setProgress();
         }
+    }
+    
+    private void stopPlaybackInRunnable() {
+        mIsStop = true;
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    if (mVideoView != null) {
+                        mVideoView.stopPlayback();
+                    }
+                } catch (NullPointerException e) {
+                    // TODO: handle exception
+                }
+            }
+        }).start();
     }
 
     @Override
