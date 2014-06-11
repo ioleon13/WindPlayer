@@ -104,6 +104,9 @@ public class WindPlayerActivity extends Activity
 	private boolean mIsStop = false;
 	private boolean mHasPaused = false;
 	
+	private int mCurVideoIndex = 0;
+	private boolean mIsChanged = false;
+	
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
@@ -206,6 +209,16 @@ public class WindPlayerActivity extends Activity
 		mController.setMediaTitle(title);
 		
 		mPlaylist = FragmentFile.getFileArray();
+		
+		if (mPlaylist != null) {
+		    for(int i = 0; i < mPlaylist.size(); ++i) {
+		        if (path.equalsIgnoreCase(mPlaylist.get(i).path)) {
+		            mCurVideoIndex = i;
+		            break;
+		        }
+		    }
+		}
+		
 		if (mPlaylist == null || mPlaylist.size() == 1) {
 		    mController.showNextPrevBtn(false);
 		} else {
@@ -628,8 +641,7 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onNext() {
-        // TODO Auto-generated method stub
-        
+        nextVideo();
     }
 
     @Override
@@ -774,6 +786,56 @@ public class WindPlayerActivity extends Activity
                 }
             }
         }).start();
+    }
+    
+    private void nextVideo() {
+        if (mPlaylist != null) {
+            if (mCurVideoIndex == mPlaylist.size() - 1) {
+                mCurVideoIndex = 0;
+            } else {
+                ++mCurVideoIndex;
+            }
+            changeVideo();
+        } else {
+            if (mVideoView != null) {
+                mVideoView.stopPlayback();
+                mVideoView.setVideoPath(path);
+                mVideoPosition = 0;
+                mDuration = 0;
+                mIsControlPaused = false;
+                playVideo();
+                mController.showPlaying();
+                mController.clearPlayState();
+                EnableControllButton();
+            }
+        }
+    }
+    
+    private void changeVideo() {
+        if (mIsStreaming) {
+            
+        } else {
+            mController.showLoading();
+            mVideoView.stopPlayback();
+            EnableControllButton();
+            _changeVideo();
+        }
+    }
+    
+    private void _changeVideo() {
+        mIsChanged = true;
+        PFile pf = mPlaylist.get(mCurVideoIndex);
+        path = pf.path;
+        mVideoView.setVideoPath(path);
+        List<String> paths = Uri.parse(path).getPathSegments();
+        title = paths == null || paths.isEmpty() ? "null" : paths.get(paths.size() - 1);
+        mController.setMediaTitle(title);
+        mVideoPosition = 0;
+        mDuration = 0;
+        mIsControlPaused = false;
+        playVideo();
+        mController.showPlaying();
+        mController.clearPlayState();
     }
 
     @Override
