@@ -219,7 +219,7 @@ public class WindPlayerActivity extends Activity
 		    }
 		}
 		
-		if (mPlaylist == null || mPlaylist.size() == 1) {
+		if (mPlaylist == null || mPlaylist.size() == 1 || mIsStreaming) {
 		    mController.showNextPrevBtn(false);
 		} else {
 		    mController.showNextPrevBtn(true);
@@ -630,10 +630,13 @@ public class WindPlayerActivity extends Activity
         mController.showFfwdButton(false);
         mController.showRewButton(false);
         mController.showStopButton(false);
-        stopPlaybackInRunnable();
         
         if (mVideoView != null)
-            mVideoView.setVisibility(View.INVISIBLE);
+        mVideoView.setVisibility(View.INVISIBLE);
+        stopPlaybackInRunnable();
+        
+        mController.showPaused();
+        
         mVideoPosition = 0;
         setProgress();
         mIsStop = true;
@@ -646,7 +649,7 @@ public class WindPlayerActivity extends Activity
 
     @Override
     public void onPrev() {
-        
+        prevVideo();
     }
 
     @Override
@@ -741,6 +744,8 @@ public class WindPlayerActivity extends Activity
         mVideoView.start();
         mController.showPlaying();
         mController.showStopButton(true);
+        mController.showFfwdButton(true);
+        mController.showRewButton(true);
 
         mIsStop = false;
         mVideoView.setVisibility(View.VISIBLE);
@@ -794,6 +799,29 @@ public class WindPlayerActivity extends Activity
                 mCurVideoIndex = 0;
             } else {
                 ++mCurVideoIndex;
+            }
+            changeVideo();
+        } else {
+            if (mVideoView != null) {
+                mVideoView.stopPlayback();
+                mVideoView.setVideoPath(path);
+                mVideoPosition = 0;
+                mDuration = 0;
+                mIsControlPaused = false;
+                playVideo();
+                mController.showPlaying();
+                mController.clearPlayState();
+                EnableControllButton();
+            }
+        }
+    }
+    
+    private void prevVideo() {
+        if (mPlaylist != null) {
+            if (mCurVideoIndex <= 0) {
+                mCurVideoIndex = mPlaylist.size() - 1;
+            } else {
+                --mCurVideoIndex;
             }
             changeVideo();
         } else {

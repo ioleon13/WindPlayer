@@ -322,6 +322,7 @@ public class MediaControllerOverlay extends FrameLayout implements
     @Override
     public void timeBarEnable(boolean enable) {
         mProgress.setEnabled(enable);
+        mProgress.setClickable(enable);
     }
 
     @Override
