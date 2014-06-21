@@ -33,7 +33,8 @@ public class MediaBusiness {
                 MediaStore.Video.Media.DURATION,
                 MediaStore.Video.Media.SIZE,
                 MediaStore.Video.Media.MIME_TYPE,
-                MediaStore.Video.Media.RESOLUTION
+                MediaStore.Video.Media.RESOLUTION,
+                MediaStore.Video.Media.TAGS
         };
         
         //thumbnail columns
@@ -69,6 +70,11 @@ public class MediaBusiness {
                 pf.file_size = cur.getLong(cur.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
                 pf.mime_type = cur.getString(cur.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE));
                 pf.resolution = cur.getString(cur.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION));
+                String strTags = cur.getString(cur.getColumnIndexOrThrow(MediaStore.Video.Media.TAGS));
+                pf.is_favorite = false;
+                if (strTags == "favorite") {
+                    pf.is_favorite = true;
+                }
                 pf.is_audio = false;
                 
                 //query thumbnail path
@@ -144,5 +150,20 @@ public class MediaBusiness {
                 result.add(pf);
         }
         return result;
+    }
+    
+    /**
+     * make the file favorite or not
+     */
+    public static void setFileFavorite(final Context ctx, final int id, final boolean bFavorite) {
+        ContentResolver resolver = ctx.getContentResolver();
+        ContentValues values = new ContentValues();
+        String where = MediaStore.Video.Media._ID + "=?";
+        String[] selectionArgs = new String[] {
+                id+""
+        };
+        values.put(MediaStore.Video.Media.TAGS, bFavorite ? "favorite" : "");
+        resolver.update(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                values, where, selectionArgs);
     }
 }

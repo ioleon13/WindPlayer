@@ -46,5 +46,9 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    
+    <style name="CustomFavoriteCheckbox" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/favorite_checkbox_style</item>
+    </style>
 
 </resources>

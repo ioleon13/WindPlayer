@@ -110,6 +110,8 @@ public class WindPlayerActivity extends Activity
 	//play list
 	private ArrayList<PFile> mPlaylist;
 	
+	private boolean mIsFavorite = false;
+	
 	private enum SeekState {
 	    SEEKFORWARD,
 	    NOSEEK,
@@ -173,6 +175,7 @@ public class WindPlayerActivity extends Activity
 		Intent intent = getIntent();
 		if (intent != null) {
 		    path = intent.getData().toString();
+		    mIsFavorite = intent.getBooleanExtra("favorite", false);
 		    title = intent.getStringExtra(FragmentOnline.DISPLAY_NAME);
 		    mIsStreaming = intent.getBooleanExtra(FragmentOnline.IS_STREAM, false);
 		    mFinishOnComplete = intent.getBooleanExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, true);

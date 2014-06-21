@@ -95,6 +95,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener {
 		} else {
 		    Intent intent = new Intent(getActivity(), WindPlayerActivity.class);
 		    //intent.putExtra("path", f.path);
+		    intent.putExtra("favorite", f.is_favorite);
 		    intent.setData(Uri.parse(f.path));
 		    startActivity(intent);
 		}

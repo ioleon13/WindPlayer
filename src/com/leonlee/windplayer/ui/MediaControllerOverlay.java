@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,7 +48,7 @@ public class MediaControllerOverlay extends FrameLayout implements
     
     //top controller view
     private TextView mMediaTitle, mCurrentTime, mSurplusPower;
-    private ImageButton mFavoriteBtn;
+    private CheckBox mFavoriteCheckbox;
     
     //center view
     private View mCenterView;
@@ -105,8 +106,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         mMediaTitle = (TextView) mRoot.findViewById(R.id.controller_media_name);
         mCurrentTime = (TextView) mRoot.findViewById(R.id.controller_system_time);
         mSurplusPower = (TextView) mRoot.findViewById(R.id.controller_surplus_power);
-        mFavoriteBtn = (ImageButton) mRoot.findViewById(R.id.controller_starred);
-        mFavoriteBtn.setOnClickListener(favoriteListener);
+        mFavoriteCheckbox = (CheckBox) mRoot.findViewById(R.id.controller_add_to_star);
         
         //center views
         mLoadingView = mRoot.findViewById(R.id.controller_video_loading);

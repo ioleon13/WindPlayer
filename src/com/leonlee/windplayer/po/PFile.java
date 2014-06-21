@@ -16,4 +16,5 @@ public final class PFile {
 	public String resolution;       //视频分辨率，W x H
 	public int width;               //视频宽度   
 	public int height;              //视频高度
+	public boolean is_favorite;     //是否加入收藏
 }
