@@ -72,8 +72,9 @@ public class MediaBusiness {
                 pf.resolution = cur.getString(cur.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION));
                 String strTags = cur.getString(cur.getColumnIndexOrThrow(MediaStore.Video.Media.TAGS));
                 pf.is_favorite = false;
-                if (strTags == "favorite") {
+                if (strTags != null && strTags.equalsIgnoreCase("favorite")) {
                     pf.is_favorite = true;
+                    Log.e(TAG, "is favorite true, title: " + pf.title + ", strTags = " + strTags);
                 }
                 pf.is_audio = false;
                 
@@ -155,7 +156,7 @@ public class MediaBusiness {
     /**
      * make the file favorite or not
      */
-    public static void setFileFavorite(final Context ctx, final int id, final boolean bFavorite) {
+    public static void setFileFavorite(final Context ctx, final long id, final boolean bFavorite) {
         ContentResolver resolver = ctx.getContentResolver();
         ContentValues values = new ContentValues();
         String where = MediaStore.Video.Media._ID + "=?";

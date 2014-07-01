@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.leonlee.windplayer.R;
+import com.leonlee.windplayer.business.MediaBusiness;
 import com.leonlee.windplayer.po.PFile;
 import com.leonlee.windplayer.util.StringUtils;
 
@@ -111,6 +112,7 @@ public class WindPlayerActivity extends Activity
 	private ArrayList<PFile> mPlaylist;
 	
 	private boolean mIsFavorite = false;
+	private long mMediaID = 0L;
 	
 	private enum SeekState {
 	    SEEKFORWARD,
@@ -210,13 +212,17 @@ public class WindPlayerActivity extends Activity
 		mController.setListener(this);
 		mController.setCanReplay(!mFinishOnComplete);
 		mController.setMediaTitle(title);
+		mController.setIsFavorite(mIsFavorite);
 		
 		mPlaylist = FragmentFile.getFileArray();
 		
 		if (mPlaylist != null) {
+		    PFile pf;
 		    for(int i = 0; i < mPlaylist.size(); ++i) {
-		        if (path.equalsIgnoreCase(mPlaylist.get(i).path)) {
+		        pf = mPlaylist.get(i);
+		        if (path.equalsIgnoreCase(pf.path)) {
 		            mCurVideoIndex = i;
+		            mMediaID = pf._id;
 		            break;
 		        }
 		    }
@@ -681,9 +687,10 @@ public class WindPlayerActivity extends Activity
     }
 
     @Override
-    public void onFavoriteVideo() {
-        // TODO Auto-generated method stub
-        
+    public void onFavoriteVideo(boolean bFavorite) {
+        Log.e(TAG, "update favorite, id = " + mMediaID + ", bFavorite = " + bFavorite);
+        MediaBusiness.setFileFavorite(getApplicationContext(), mMediaID, bFavorite);
+        updateFavoriteState(bFavorite);
     }
 
     @Override
@@ -719,6 +726,19 @@ public class WindPlayerActivity extends Activity
         }
         
         showControllerPaused();
+    }
+    
+    private void updateFavoriteState(boolean bFavorite) {
+        if (mPlaylist != null) {
+            PFile pf;
+            for(int i = 0; i < mPlaylist.size(); ++i) {
+                pf = mPlaylist.get(i);
+                if (mMediaID == pf._id) {
+                    pf.is_favorite = bFavorite;
+                    break;
+                }
+            }
+        }
     }
     
     private void showControllerPaused() {

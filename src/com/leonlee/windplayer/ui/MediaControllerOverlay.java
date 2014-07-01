@@ -107,6 +107,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         mCurrentTime = (TextView) mRoot.findViewById(R.id.controller_system_time);
         mSurplusPower = (TextView) mRoot.findViewById(R.id.controller_surplus_power);
         mFavoriteCheckbox = (CheckBox) mRoot.findViewById(R.id.controller_add_to_star);
+        mFavoriteCheckbox.setOnClickListener(favoriteListener);
         
         //center views
         mLoadingView = mRoot.findViewById(R.id.controller_video_loading);
@@ -311,6 +312,10 @@ public class MediaControllerOverlay extends FrameLayout implements
     public void setSurplusPower(String power) {
         if (mSurplusPower != null)
             mSurplusPower.setText(power);
+    }
+    
+    public void setIsFavorite(boolean bFavorite) {
+        mFavoriteCheckbox.setChecked(bFavorite);
     }
     
 
@@ -543,7 +548,7 @@ public class MediaControllerOverlay extends FrameLayout implements
         
         @Override
         public void onClick(View v) {
-            mListener.onFavoriteVideo();
+            mListener.onFavoriteVideo(((CheckBox)v).isChecked());
         }
     };
     

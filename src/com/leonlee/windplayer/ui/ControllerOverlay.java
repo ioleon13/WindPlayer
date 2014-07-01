@@ -23,7 +23,7 @@ public interface ControllerOverlay {
         void onFfwd();
         void onRew();
         
-        void onFavoriteVideo();
+        void onFavoriteVideo(boolean bFavorite);
         
         void onSeekStart();
         void onSeekMove(int time);
