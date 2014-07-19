@@ -6,8 +6,8 @@
   </head>
   <body>
     <media id="001" version="21" title="CCTV-1 综合" image="http://cn.daroonsoft.com/images/cctv_1.png" guide="cctv1">
-        <ref href="rtsp://rlive.tv189.cn/live/172" width="384" height="288" bitrate="755" />
-                <ref href="rtsp://114.255.201.246/cctv1_256_h264.sdp" width="320" height="240" bitrate="264" />
+        <ref href="http://120.192.81.24/live/5/30/53c90798941c4dada89edbeaa09c20a8.m3u8?type=tv" width="384" height="288" bitrate="755" />
+                <ref href="rtsp://stream1.gzcbn.tv:1935/app_2/ls_1.stream?domain=gztv" width="320" height="240" bitrate="264" />
                 <ref href="rtsp://116.199.127.68/cctv1_HD" width="720" height="576" bitrate="1044" />
                 <ref href="rtmp://live.cditv.cn/test/CCTV1" width="320" height="240" bitrate="548" />
                 <ref href="rtsp://bupt01.video.edu.cn/CCTV-1" width="640" height="480" bitrate="412" />
@@ -28,7 +28,7 @@
                 <ref href="rtsp://116.199.127.68/cctv3" width="720" height="576" bitrate="1044" />
                 <ref href="http://cntv.itv.doplive.com.cn/live593/index_128k.m3u8" width="320" height="240" bitrate="256" />
     </media>
-    <media id="004" version="19" title="CCTV-4 中文国际（亚）" image="http://cn.daroonsoft.com/images/cctv_4.png"  guide="cctv4" 
+    <media id="004" version="19" title="CCTV-4 中文国际" image="http://cn.daroonsoft.com/images/cctv_4.png"  guide="cctv4" 
         desc="中央电视台国际频道是以海外华人、华侨和港、澳、台为主要服务对象的专业频道，于1992年10月1日开播。国际频道的播出信号采用数字压缩技术，通过多颗国际卫星传输，基本实现了卫星传输信号的全球覆盖和卫星直播信号的重点地区覆盖。">
         <ref href="rtsp://rlive.tv189.cn/live/332" width="640" height="480" bitrate="632" />
                 <ref href="http://gslb.tv.sohu.com/live?cid=11" width="640" height="480" bitrate="1044" />
@@ -55,7 +55,7 @@
                 <ref href="rtsp://116.199.127.68/cctv6" width="720" height="576" bitrate="800" />
                 <ref href="http://live512.itv.doplive.com.cn/live512/index_128k.m3u8" width="320" height="240" bitrate="256" />
     </media>
-    <media id="007" version="11" title="CCTV-7 军事 农业" image="http://cn.daroonsoft.com/images/cctv_7.png"  guide="cctv7"
+    <media id="007" version="11" title="CCTV-7 军事农业" image="http://cn.daroonsoft.com/images/cctv_7.png"  guide="cctv7"
         desc="中央电视台少儿·军事·农业频道是以播出少儿、军事、农业节目为主的专业频道，于1995年11月30日开播，通过亚太1A卫星覆盖全国。平均每日播出近17个小时。" >
         <ref href="mms://bupt02.video.edu.cn/CCTV-7" width="640" height="480" bitrate="632" />
                 <ref href="http://cntv.itv.doplive.com.cn/live597/index_900k.m3u8" width="320" height="240" bitrate="256" />

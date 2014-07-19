@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5.0dip"
         android:layout_margin="4.0dip"/>
     
     <ImageView 
@@ -32,6 +34,6 @@
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@color/title"
-        android:textSize="16sp"
-        android:textStyle="normal" />
+        android:textSize="17sp"
+        android:textStyle="bold" />
 </RelativeLayout>
