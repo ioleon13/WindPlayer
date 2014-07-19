@@ -1,6 +1,9 @@
 package com.leonlee.windplayer.util;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,5 +74,13 @@ public class StringUtils {
         int hours = totalSeconds / 3600;
 
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+    
+    /**
+     * convert the string to resource id
+     */
+    public static int getResourceIdByName(Context ctx, String name, String defType) {
+        Resources res = ctx.getResources();
+        return res.getIdentifier(name, defType, ctx.getPackageName());
     }
 }
